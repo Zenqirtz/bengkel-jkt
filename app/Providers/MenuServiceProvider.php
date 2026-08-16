@@ -72,7 +72,7 @@ class MenuServiceProvider extends ServiceProvider
           })
           ->where('m.active', 'Y')
           ->orderBy('m.sort_path')                      // contoh 002/003/001 → urut hierarkis
-          ->select('m.id', 'm.parent_id', 'm.title', 'm.url_menu', 'm.slug')
+          ->select('m.id', 'm.parent_id', 'm.title', 'm.url_menu', 'm.slug', 'm.sort_path')
           ->distinct()
           ->get();
 
