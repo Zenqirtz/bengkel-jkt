@@ -34,44 +34,45 @@ class MenuServiceProvider extends ServiceProvider
 
     // Jalankan setelah middleware web/ auth berjalan (saat render view)
     View::composer('*', function ($view) {
-      // ================== Ambil user & group id ==================
+      static $cachedPerRequest = [];
+
       $user = auth()->user();
       $userId = $user?->id;
       
-      // Jika user belum login, tampilkan menu kosong (atau semua menu publik jika ada konsep publik)
       if (!$userId) {
         View::share('menuData', [
-            (object)['menu' => []],   // vertical
-            (object)['menu' => []],   // horizontal (belum dipakai)
+            (object)['menu' => []],
+            (object)['menu' => []],
         ]);
         return;
       }
 
-      // Group yang dimiliki user (bisa banyak)
-      $groupIds = DB::table('users_group')
-        ->where('userid', $userId)
-        ->pluck('groupid');
-
-      // Jika user tidak punya grup → kosong
-      if ($groupIds->isEmpty()) {
-        View::share('menuData', [
-            (object)['menu' => []],   // vertical
-            (object)['menu' => []],   // horizontal (belum dipakai)
-        ]);
+      if (isset($cachedPerRequest[$userId])) {
+        View::share('menuData', $cachedPerRequest[$userId]);
         return;
       }
 
-      // -------- Vertical Menu from DB (tabel menu) --------
-      // Cache 5 menit agar hemat query; silakan sesuaikan durasinya
-      // $verticalMenuData = Cache::remember('menu.vertical.v_menu', 300, function () {
+      $cacheKey = 'user_menu_' . $userId . '_' . ($user->user_group ?? 0);
+      $menuData = Cache::remember($cacheKey, 300, function () use ($userId) {
+        $groupIds = DB::table('users_group')
+          ->where('userid', $userId)
+          ->pluck('groupid');
+
+        if ($groupIds->isEmpty()) {
+          return [
+            (object)['menu' => []],
+            (object)['menu' => []],
+          ];
+        }
+
         $rows = DB::table('v_menu as m')
           ->join('group_detail as gd', function ($join) use ($groupIds) {
               $join->on('gd.menuid', '=', 'm.id')
                     ->whereIn('gd.groupid', $groupIds)
-                    ->where('gd.isList', '=', 1);         // tampilkan yg boleh di-list
+                    ->where('gd.isList', '=', 1);
           })
           ->where('m.active', 'Y')
-          ->orderBy('m.sort_path')                      // contoh 002/003/001 → urut hierarkis
+          ->orderBy('m.sort_path')
           ->select('m.id', 'm.parent_id', 'm.title', 'm.url_menu', 'm.slug', 'm.sort_path')
           ->distinct()
           ->get();
@@ -82,12 +83,9 @@ class MenuServiceProvider extends ServiceProvider
             $children = $byParent->get($parentId ?: 0, collect());
 
             return $children->map(function ($m) use (&$build) {
-                // bentuk sebagai stdClass (bukan array)
                 $node = (object) [
                     'name' => $m->title,
-                    // slug boleh string atau array; template kamu sudah handle dua-duanya
-                    // 'slug' => Str::slug($m->slug), // atau pakai nama route kalau ada
-                    'slug' => $m->slug, // atau pakai nama route kalau ada
+                    'slug' => $m->slug,
                 ];
 
                 if (!empty($m->url_menu) && $m->url_menu !== '#') {
@@ -96,26 +94,20 @@ class MenuServiceProvider extends ServiceProvider
 
                 $kids = $build($m->id);
                 if ($kids->isNotEmpty()) {
-                    // pastikan anak juga berupa array of stdClass
                     $node->submenu = $kids->values()->all();
                 }
 
-                return $node; // stdClass
+                return $node;
             });
         };
 
         $tree = $build(0)->values()->all();
+        $verticalMenuData = (object) ['menu' => $tree];
+        return [$verticalMenuData, $verticalMenuData];
+      });
 
-        // bungkus seperti json_decode (object berisi key "menu")
-        // return (object) ['menu' => $tree];
-      // });
-
-      $verticalMenuData = (object) ['menu' => $tree];
-      $horizontalMenuData = $verticalMenuData;
-
-      // Share all menuData to all the views
-      $this->app->make('view')->share('menuData', [$verticalMenuData, $horizontalMenuData]);
-
+      $cachedPerRequest[$userId] = $menuData;
+      View::share('menuData', $menuData);
     });  
 
     

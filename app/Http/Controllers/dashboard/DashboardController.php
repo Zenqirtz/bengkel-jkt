@@ -403,43 +403,58 @@ class DashboardController extends Controller
 
     $bulan = request()->input('bulan', date('m'));
 
-    ## Bangun kartu ringkasan bulanan sesuai role
-    $cardKeys = $this->cardsForRole($groupNama);
-    $cardDefs = $this->cardDefinitions();
+    ## Bangun kartu ringkasan bulanan sesuai role (Cache 60s agar refresh instan)
+    $cacheKey = "dash_metrics_{$kode_cabang}_{$groupNama}_{$tahun}_{$bulan}";
+    $dashMetrics = Cache::remember($cacheKey, 60, function () use ($groupNama, $kode_cabang, $bulan, $tahun) {
+      $cardKeys = $this->cardsForRole($groupNama);
+      $cardDefs = $this->cardDefinitions();
 
-    $ringkasanCards = [];
-    foreach ($cardKeys as $key) {
-      if (!isset($cardDefs[$key])) continue;
-      $def = $cardDefs[$key];
-      $result = $def['calc']($kode_cabang, $bulan, $tahun);
-      $ringkasanCards[] = [
-        'key' => $key,
-        'label' => $def['label'],
-        'icon' => $def['icon'],
-        'color' => $def['color'],
-        'badge' => $def['badge'] ?? null,
-        'display_value' => $result['is_currency'] ? $this->fmtRp($result['value']) : number_format($result['value'], 0, ',', '.'),
-        'sub' => $result['sub'] ?? ($def['sub_label'] ?? null),
+      $ringkasanCards = [];
+      foreach ($cardKeys as $key) {
+        if (!isset($cardDefs[$key])) continue;
+        $def = $cardDefs[$key];
+        $result = $def['calc']($kode_cabang, $bulan, $tahun);
+        $ringkasanCards[] = [
+          'key' => $key,
+          'label' => $def['label'],
+          'icon' => $def['icon'],
+          'color' => $def['color'],
+          'badge' => $def['badge'] ?? null,
+          'display_value' => $result['is_currency'] ? $this->fmtRp($result['value']) : number_format($result['value'], 0, ',', '.'),
+          'sub' => $result['sub'] ?? ($def['sub_label'] ?? null),
+        ];
+      }
+
+      $totalSpkBelumTurunLap = DB::table('v_rep_belum_turun_lapangan')
+        ->where('kode_cabang', $kode_cabang)
+        ->count();
+
+      $totalSpkPending = DB::table('v_warning_turun_lapangan')
+        ->where('kode_cabang', $kode_cabang)
+        ->count();
+
+      $totalEstBelumBuat = DB::table('v_rep_estimasi_belum_dibuat')
+        ->where('kode_cabang', $kode_cabang)
+        ->count();
+
+      $totalEstBelumKirim = DB::table('v_rep_estimasi_belum_dikirim')
+        ->where('kode_cabang', $kode_cabang)
+        ->count();
+
+      return [
+        'cards' => $ringkasanCards,
+        'spkBelumTurun' => $totalSpkBelumTurunLap,
+        'spkPending' => $totalSpkPending,
+        'estBelumBuat' => $totalEstBelumBuat,
+        'estBelumKirim' => $totalEstBelumKirim,
       ];
-    }
+    });
 
-    ## SPK Belum Turun Lapangan / Pending / Estimasi -> tetap dipakai untuk panel "Pending Pekerjaan"
-    ## (independen dari role, tampil untuk semua sesuai kebutuhan operasional harian)
-    $totalSpkBelumTurunLap = DB::table('v_rep_belum_turun_lapangan')
-      ->where('kode_cabang', $kode_cabang)
-      ->count();
-
-    $totalSpkPending = DB::table('v_warning_turun_lapangan')
-      ->where('kode_cabang', $kode_cabang)
-      ->count();
-
-    $totalEstBelumBuat = DB::table('v_rep_estimasi_belum_dibuat')
-      ->where('kode_cabang', $kode_cabang)
-      ->count();
-
-    $totalEstBelumKirim = DB::table('v_rep_estimasi_belum_dikirim')
-      ->where('kode_cabang', $kode_cabang)
-      ->count();
+    $ringkasanCards = $dashMetrics['cards'];
+    $totalSpkBelumTurunLap = $dashMetrics['spkBelumTurun'];
+    $totalSpkPending = $dashMetrics['spkPending'];
+    $totalEstBelumBuat = $dashMetrics['estBelumBuat'];
+    $totalEstBelumKirim = $dashMetrics['estBelumKirim'];
 
     ## Chart Statistik SPK
     $spkMasukData = array_fill(0, 12, 0);
