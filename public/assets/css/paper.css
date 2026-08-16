@@ -1,0 +1,205 @@
+@page {
+  margin: 0;
+}
+body {
+  margin: 0;
+}
+.sheet {
+  font-family: Tahoma;
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  page-break-after: always;
+}
+
+/** Paper sizes **/
+body.custom1 .sheet {
+  width: 240mm;
+  height: 155mm;
+}
+body.custom2 .sheet {
+  width: 210mm;
+  height: 280mm;
+}
+body.A3 .sheet {
+  width: 297mm;
+  height: 419mm;
+}
+body.A3.landscape .sheet {
+  width: 420mm;
+  height: 296mm;
+}
+body.A4 .sheet {
+  width: 210mm;
+  /* height: 296mm; */
+  height: 280mm;
+}
+body.A4.landscape .sheet {
+  width: 297mm;
+  height: 209mm;
+}
+body.A5 .sheet {
+  width: 148mm;
+  height: 209mm;
+}
+body.A5.landscape .sheet {
+  width: 210mm;
+  height: 147mm;
+}
+body.F4 .sheet {
+  width: 210mm;
+  height: 330mm;
+}
+body.F4.landscape .sheet {
+  width: 330mm;
+  height: 210mm;
+}
+
+/** Padding area **/
+.sheet.padding-5mm {
+  padding: 5mm;
+}
+.sheet.padding-10mm {
+  padding: 10mm;
+}
+.sheet.padding-15mm {
+  padding: 15mm;
+}
+.sheet.padding-20mm {
+  padding: 20mm;
+}
+.sheet.padding-25mm {
+  padding: 25mm;
+}
+
+.mt-0 { margin-top: 0rem; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mt-5 { margin-top: 3rem; }
+
+.mb-0 { margin-bottom: 0rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 3rem; }
+
+.fw-bold {font-weight: bolder; }
+
+.title {
+  font-family: Tahoma;
+  font-size: 14px;
+  font-weight: bolder;
+  font-variant: small-caps;
+  color: #000;
+}
+
+.subtitle {
+  font-family: Tahoma;
+  font-size: 12px;
+  font-weight: bolder;
+  /* font-variant: small-caps; */
+  color: #000;
+}
+
+.content {
+  font-family: Tahoma;
+  font-size: 12px;
+  color: #000;
+  padding: 0px;
+}
+
+.footer {
+  font-family: Tahoma;
+  font-size: 12px;
+  color: #000;
+}
+
+.table tr td {
+  font-size: 12px;
+  padding: 0.5mm;
+}
+
+/* Garis Double Header */
+.double-divider {
+  border-top: 1px solid #000;
+  border-bottom: 3px solid #000; /* Garis bawah lebih tebal */
+  height: 3px; /* Jarak antar garis */
+  margin-bottom: 20px;
+}
+
+/* Judul Dokumen */
+.doc-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* --- SIGNATURE SECTION --- */
+.signature-section {
+  margin-top: 20px;
+}
+.signature-box {
+  width: 200px;
+}
+.signature-title {
+  margin-bottom: 60px; /* Ruang untuk tanda tangan */
+}
+.signature-line {
+  border-bottom: 1px solid #000;
+  margin-top: 5px;
+}
+
+/* --- FOOTER --- */
+.doc-footer {
+  font-size: 11px;
+  font-style: italic; /* Sesuai gaya umum dokumen rangkap */
+}
+
+.footer-total {
+  font-weight: bolder;
+  font-variant: small-caps;
+}
+
+/** For screen preview **/
+@media screen {
+  body {
+    background: #e0e0e0;
+  }
+  .sheet {
+    background: white;
+    box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.3);
+    margin: 5mm;
+  }
+}
+
+/** Fix for Chrome issue #273306 **/
+@media print {
+  body.A3.landscape {
+    width: 420mm;
+  }
+  body.A3,
+  body.A4.landscape {
+    width: 297mm;
+  }
+  body.A4,
+  body.A5.landscape {
+    width: 210mm;
+  }
+  body.F4,
+  body.F4.landscape {
+    width: 215mm;
+  }
+  body.A5 {
+    width: 148mm;
+  }
+  body.A5.landscape {
+    width: 210mm;
+    height: 147mm;
+  }
+}

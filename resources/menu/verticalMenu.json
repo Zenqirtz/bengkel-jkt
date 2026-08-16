@@ -1,0 +1,557 @@
+{
+  "menu": [
+    {
+      "url": "home",
+      "name": "Beranda",
+      "icon": "menu-icon icon-base ri ri-home-smile-line",
+      "slug": "home"
+    },
+    {
+      "name": "Pengaturan",
+      "icon": "menu-icon icon-base ri ri-admin-line",
+      "slug": "setting",
+      "submenu": [
+        {
+          "url": "setting/profile-perusahaan",
+          "name": "Profile Perusahaan",
+          "slug": "setting-profile-perusahaan"
+        },
+        {
+          "url": "setting/karyawan",
+          "name": "Data Karyawan",
+          "slug": "setting-karyawan"
+        },
+        {
+          "name": "Hak Akses",
+          "slug": "setting-akses",
+          "submenu": [
+            {
+              "url": "setting/akses-registrasi-user",
+              "name": "Registrasi User",
+              "slug": "setting-akses-registrasi-user"
+            },
+            {
+              "url": "setting/akses-menu",
+              "name": "Menu",
+              "slug": "setting-akses-menu"
+            },
+            {
+              "url": "setting/akses-group",
+              "name": "Group Admin",
+              "slug": "setting-akses-group"
+            },
+            {
+              "url": "setting/akses-user-privilege",
+              "name": "User Privilege",
+              "slug": "setting-akses-user-privilege"
+            },
+            {
+              "url": "setting/akses-group-privilege",
+              "name": "Group Privilege",
+              "slug": "setting-akses-group-privilege"
+            },
+            {
+              "url": "setting/akses-cabang-privilege",
+              "name": "Cabang Privilege",
+              "slug": "setting-akses-cabang-privilege"
+            }
+          ]
+        },
+        {
+          "url": "setting/periode-pembukuan",
+          "name": "Periode Pembukuan",
+          "slug": "setting-periode-pembukuan"
+        },
+        {
+          "url": "setting/penomoran-transaksi",
+          "name": "Penomoran Transaksi",
+          "slug": "setting-penomoran-transaksi"
+        },
+        {
+          "url": "setting/printer",
+          "name": "Printer",
+          "slug": "setting-printer"
+        },
+        {
+          "url": "setting/pengumuman",
+          "name": "Pengumuman",
+          "slug": "setting-pengumuman"
+        },
+        {
+          "url": "setting/jenis-pekerjaan",
+          "name": "Jenis Pekerjaan",
+          "slug": "setting-jenis-pekerjaan"
+        },
+        {
+          "url": "setting/panel-pekerjaan",
+          "name": "Panel Pekerjaan",
+          "slug": "setting-panel-pekerjaan"
+        },
+        {
+          "url": "setting/posisi-pekerjaan",
+          "name": "Posisi Pekerjaan",
+          "slug": "setting-posisi-pekerjaan"
+        },
+        {
+          "url": "setting/tarif-ppn",
+          "name": "Tarif PPN",
+          "slug": "setting-tarif-ppn"
+        },
+        {
+          "url": "setting/coa",
+          "name": "COA",
+          "slug": "setting-coa"
+        },
+        {
+          "url": "setting/backup-database",
+          "name": "Backup & Restore DB",
+          "slug": "setting-backup-database"
+        }
+      ]
+    },
+    {
+      "name": "Customer Service",
+      "icon": "menu-icon icon-base ri ri-shopping-bag-3-line",
+      "slug": "customer-service",
+      "submenu": [
+        {
+          "name": "Input Data",
+          "slug": "input-data",
+          "submenu": [
+            {
+              "url": "#",
+              "name": "Data Pemilik",
+              "slug": "data-pemilik"
+            },
+            {
+              "url": "#",
+              "name": "Data Kendaraan",
+              "slug": "data-kendaraan"
+            },
+            {
+              "url": "#",
+              "name": "Data Asuransi",
+              "slug": "data-asuransi"
+            },
+            {
+              "url": "#",
+              "name": "Data Marketing",
+              "slug": "data-marketing"
+            },
+            {
+              "url": "#",
+              "name": "Data Perantara",
+              "slug": "data-perantara"
+            }
+          ]
+        },
+        {
+          "url": "#",
+          "name": "SPK",
+          "slug": "spk"
+        },
+        {
+          "url": "#",
+          "name": "Invoice OR",
+          "slug": "invoice-or"
+        },
+        {
+          "url": "#",
+          "name": "SPK Tutup",
+          "slug": "spk-tutup"
+        },
+        {
+          "url": "#",
+          "name": "Mobil Keluar",
+          "slug": "mobil-keluar"
+        },
+        {
+          "url": "#",
+          "name": "SPK Batal",
+          "slug": "spk-batal"
+        },
+        {
+          "name": "Laporan",
+          "slug": "lap-cs",
+          "submenu": [
+            {
+              "url": "#",
+              "name": "SPK Master",
+              "slug": "spk-master"
+            },
+            {
+              "url": "#",
+              "name": "Mobil Masuk",
+              "slug": "mobil-masuk"
+            },
+            {
+              "url": "#",
+              "name": "Mobil Belum Turun Lapangan",
+              "slug": "mobil-belum-turun-lapangan"
+            },
+            {
+              "url": "#",
+              "name": "Mobil Turun Lapangan Per Periode",
+              "slug": "mobil-turun-lapangan-periode"
+            },
+            {
+              "url": "#",
+              "name": "Posisi Perbaikan di Lapangan",
+              "slug": "posisi-perbaikan-lapangan"
+            },
+            {
+              "url": "#",
+              "name": "SPK Tutup",
+              "slug": "spk-tutup"
+            },
+            {
+              "url": "#",
+              "name": "Kendaraan Keluar",
+              "slug": "kendaraan-keluar"
+            },
+            {
+              "url": "#",
+              "name": "Invoice OR Belum Terbit",
+              "slug": "invoice-or-belum-terbit"
+            },
+            {
+              "url": "#",
+              "name": "Invoice OR Terbit",
+              "slug": "invoice-or-terbit"
+            },
+            {
+              "url": "#",
+              "name": "Invoice OR Belum Ditagih",
+              "slug": "invoice-or-belum-ditagih"
+            },
+            {
+              "url": "#",
+              "name": "Invoice OR Belum Lunas",
+              "slug": "invoice-or-belum-lunas"
+            },
+            {
+              "url": "#",
+              "name": "Outstanding OR",
+              "slug": "outstanding-or"
+            },
+            {
+              "url": "#",
+              "name": "Outstanding OR Per Tahun",
+              "slug": "outstanding-or-per-tahun"
+            },
+            {
+              "url": "#",
+              "name": "SPK Batal",
+              "slug": "spk-batal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Administrasi",
+      "icon": "menu-icon icon-base ri ri-database-2-line",
+      "slug": "administrasi",
+      "submenu": [
+        {
+          "url": "#",
+          "name": "Konsep Estimasi",
+          "slug": "konsep-estimasi"
+        },
+        {
+          "url": "#",
+          "name": "Estimasi Disetujui",
+          "slug": "estimasi-disetujui"
+        },
+        {
+          "url": "#",
+          "name": "Kewajiban Tertanggung",
+          "slug": "kewajiban-tertanggung"
+        },
+        {
+          "url": "#",
+          "name": "Jadwal Turun Lapangan",
+          "slug": "jadwal-turun-lapangan"
+        },
+        {
+          "url": "#",
+          "name": "Progress Kerja",
+          "slug": "progress-kerja"
+        },
+        {
+          "url": "#",
+          "name": "Kirim Salvage",
+          "slug": "kirim-salvage"
+        },
+        {
+          "url": "#",
+          "name": "Invoice Asuransi/Pribadi",
+          "slug": "invoice-asuransi-pribad-"
+        },
+        {
+          "name": "Laporan",
+          "slug": "lap-admin",
+          "submenu": [
+            {
+              "url": "#",
+              "name": "Estimasi Belum Dibuat",
+              "slug": "estimasi-belum-dibuat"
+            },
+            {
+              "url": "#",
+              "name": "Estimasi Belum Dikirim",
+              "slug": "estimasi-belum-dikirim"
+            },
+            {
+              "url": "#",
+              "name": "Rekap Estimasi",
+              "slug": "rekap-estimasi"
+            },
+            {
+              "url": "#",
+              "name": "Rincian Estimasi",
+              "slug": "rincian-estimasi"
+            },
+            {
+              "url": "#",
+              "name": "Estimasi Per Tahun",
+              "slug": "estimasi-per-tahun"
+            },
+            {
+              "url": "#",
+              "name": "Estimasi Disetujui",
+              "slug": "estimasi-disetujui"
+            },
+            {
+              "url": "#",
+              "name": "Insentif Kwitansi",
+              "slug": "insentif-kwitansi"
+            },
+            {
+              "url": "#",
+              "name": "Insentif Pembayaran",
+              "slug": "insentif-pembayaran"
+            },
+            {
+              "url": "#",
+              "name": "Insentif Marketing",
+              "slug": "insentif-marketing"
+            },
+            {
+              "url": "#",
+              "name": "Insentif ST",
+              "slug": "insentif-st"
+            },
+            {
+              "url": "#",
+              "name": "Aging Penawaran",
+              "slug": "aging-penawaran"
+            },
+            {
+              "url": "#",
+              "name": "Aging Penagihan",
+              "slug": "aging-penagihan"
+            },
+            {
+              "url": "#",
+              "name": "Komisi Surveyor",
+              "slug": "Komisi Surveyor"
+            },
+            {
+              "url": "#",
+              "name": "Rekap Point Panel",
+              "slug": "rekap-point-panel"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Gudang",
+      "icon": "menu-icon icon-base ri ri-box-3-line",
+      "slug": "gudang",
+      "submenu": [
+        {
+          "name": "Input Data",
+          "slug": "input-data",
+          "submenu": [
+            {
+              "url": "#",
+              "name": "Data Bahan",
+              "slug": "data-bahan"
+            },
+            {
+              "url": "#",
+              "name": "Data Sparepart",
+              "slug": "data-sparepart"
+            },
+            {
+              "url": "#",
+              "name": "Data Cat",
+              "slug": "data-cat"
+            },
+            {
+              "url": "#",
+              "name": "Data Umum",
+              "slug": "data-umum"
+            },
+            {
+              "url": "#",
+              "name": "Data Pemasok",
+              "slug": "data-pemasok"
+            }
+          ]
+        },
+        {
+          "url": "#",
+          "name": "Permintaan Barang",
+          "slug": "permintaan-barang"
+        },
+        {
+          "url": "#",
+          "name": "Order Pembelian",
+          "slug": "order-pembelian"
+        },
+        {
+          "url": "#",
+          "name": "Input Pembelian",
+          "slug": "input-pembelian"
+        },
+        {
+          "url": "#",
+          "name": "Retur Pembelian",
+          "slug": "retur-pembelian"
+        },
+        {
+          "url": "#",
+          "name": "Pengeluaran Barang",
+          "slug": "pengeluaran-barang"
+        },
+        {
+          "url": "#",
+          "name": "Adjustment/Stock Opname",
+          "slug": "stock-opname"
+        },
+        {
+          "name": "Laporan",
+          "slug": "lap-gudang",
+          "submenu": [
+            {
+              "url": "#",
+              "name": "Pembelian Bahan",
+              "slug": "pembelian-bahan"
+            },
+            {
+              "url": "#",
+              "name": "Pembelian Cat",
+              "slug": "pembelian-cat"
+            },
+            {
+              "url": "#",
+              "name": "Pembelian Sparepart",
+              "slug": "pembelian-sparepart"
+            },
+            {
+              "url": "#",
+              "name": "Gudang Bahan",
+              "slug": "gudang-bahan"
+            },
+            {
+              "url": "#",
+              "name": "Gudang Cat",
+              "slug": "gudang-cat"
+            },
+            {
+              "url": "#",
+              "name": "Gudang Sparepart",
+              "slug": "gudang-sparepart"
+            },
+            {
+              "url": "#",
+              "name": "Pengeluaran Bahan",
+              "slug": "pengeluaran-bahan"
+            },
+            {
+              "url": "#",
+              "name": "Pengeluaran Cat",
+              "slug": "pengeluaran-cat"
+            },
+            {
+              "url": "#",
+              "name": "Pengeluaran Sparepart",
+              "slug": "pengeluaran-sparepart"
+            },
+            {
+              "url": "#",
+              "name": "Kontrol Pemakaian Bahan",
+              "slug": "kontrol-pemakaian-bahan"
+            },
+            {
+              "url": "#",
+              "name": "Analisa Pemakaian Bahan",
+              "slug": "analisa-pemakaian-bahan"
+            },
+            {
+              "url": "#",
+              "name": "Analisa Pemakaian Cat",
+              "slug": "analisa-pemakaian-cat"
+            },
+            {
+              "url": "#",
+              "name": "Retur Sparepart",
+              "slug": "retur-sparepart"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Keuangan",
+      "icon": "menu-icon icon-base ri ri-bill-line",
+      "slug": "keuangan",
+      "submenu": [
+        {
+          "url": "#",
+          "name": "Data Rekening Bank",
+          "slug": "data-rekening-bank"
+        },
+        {
+          "url": "#",
+          "name": "Bukti Penerimaan",
+          "slug": "bukti-penerimaan"
+        },
+        {
+          "url": "#",
+          "name": "Input Kas",
+          "slug": "input-kas"
+        },
+        {
+          "url": "#",
+          "name": "Input Bank",
+          "slug": "input-bank"
+        },
+        {
+          "url": "#",
+          "name": "History SPK",
+          "slug": "history-spk"
+        },
+        {
+          "name": "Laporan",
+          "slug": "lap-keuangan",
+          "submenu": [
+            {
+              "url": "#",
+              "name": "Bank Urut Voucher",
+              "slug": "bank-urut-voucher"
+            },
+            {
+              "url": "#",
+              "name": "CH BG Belum Kliring",
+              "slug": "ch-bg-belum-kliring"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

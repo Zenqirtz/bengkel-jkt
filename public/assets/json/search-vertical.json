@@ -1,0 +1,40 @@
+{
+  "navigation": {
+    "Cabang": [
+      {
+        "name": "HO (Head Office)-Anugerah Makmur",
+        "icon": "ri-home-7-line",
+        "url": "change-cabang/0001"
+      },
+      {
+        "name": "KAM (KENCANA AUTO MANDIRI)",
+        "icon": "ri-home-7-line",
+        "url": "change-cabang/0016"
+      },
+      {
+        "name": "PGA (Permata Gading Autocenter)",
+        "icon": "ri-home-7-line",
+        "url": "change-cabang/0013"
+      }
+    ]
+  },
+  "suggestions": {
+    "Cabang": [
+      {
+        "name": "HO (Head Office)-Anugerah Makmur",
+        "icon": "ri-home-7-line",
+        "url": "change-cabang/0001"
+      },
+      {
+        "name": "KAM (KENCANA AUTO MANDIRI)",
+        "icon": "ri-home-7-line",
+        "url": "change-cabang/0016"
+      },
+      {
+        "name": "PGA (Permata Gading Autocenter)",
+        "icon": "ri-home-7-line",
+        "url": "change-cabang/0013"
+      }
+    ]
+  }
+}
