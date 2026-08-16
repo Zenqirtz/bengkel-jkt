@@ -22,14 +22,17 @@ class LogActivity extends Model
     public static function saveLogActivity($description, $payloads=[])
     {
 
+        $ip = request()->ip() ?? ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
+        $username = Auth::user()?->username ?? 'SYSTEM';
+
         $data = [
-            'wkip' => $_SERVER['REMOTE_ADDR'],
-            'created_by' => Auth::user()->username,
-            'updated_by' => Auth::user()->username,
+            'wkip' => $ip,
+            'created_by' => $username,
+            'updated_by' => $username,
             'description' => $description
         ];
 
-        if(count($payloads)) {
+        if(!empty($payloads)) {
             $data['payloads'] = json_encode($payloads);
         }
 
