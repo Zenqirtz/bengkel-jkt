@@ -50,10 +50,11 @@ class DashboardController extends Controller
         'color' => 'success',
         'sub_label' => 'Kwitansi',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
-          $row = DB::table('v_trx_kwitansi')
+          $startDate = sprintf('%04d-%02d-01 00:00:00', $tahun, $bulan);
+          $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
+          $row = DB::table('t_kwitansi')
             ->where('kode_cabang', $kode_cabang)
-            ->whereMonth('tgl_kwitansi', $bulan)
-            ->whereYear('tgl_kwitansi', $tahun)
+            ->whereBetween('tanggal', [$startDate, $endDate])
             ->selectRaw('COUNT(*) as jumlah, COALESCE(SUM(grand_total),0) as total')
             ->first();
           return ['value' => $row->total ?? 0, 'sub' => ($row->jumlah ?? 0) . ' Kwitansi', 'is_currency' => true];
@@ -65,11 +66,13 @@ class DashboardController extends Controller
         'icon' => 'ri-money-dollar-circle-line',
         'color' => 'primary',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
-          $total = Spk::where('kode_cabang', $kode_cabang)
+          $startDate = sprintf('%04d-%02d-01 00:00:00', $tahun, $bulan);
+          $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
+          $total = DB::table('t_spk_master')
+            ->where('kode_cabang', $kode_cabang)
             ->where('kode_jenis_pelanggan', '00001')
             ->where('ada_or', '01')
-            ->whereMonth('tgl_masuk', $bulan)
-            ->whereYear('tgl_masuk', $tahun)
+            ->whereBetween('tgl_masuk', [$startDate, $endDate])
             ->sum('total_or');
           return ['value' => $total, 'sub' => null, 'is_currency' => true];
         },
@@ -80,11 +83,13 @@ class DashboardController extends Controller
         'icon' => 'ri-money-dollar-circle-line',
         'color' => 'primary',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
-          $row = Spk::where('kode_cabang', $kode_cabang)
+          $startDate = sprintf('%04d-%02d-01 00:00:00', $tahun, $bulan);
+          $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
+          $row = DB::table('t_spk_master')
+            ->where('kode_cabang', $kode_cabang)
             ->where('kode_jenis_pelanggan', '00001')
             ->where('ada_or', '01')
-            ->whereMonth('tgl_invoice', $bulan)
-            ->whereYear('tgl_invoice', $tahun)
+            ->whereBetween('tgl_invoice', [$startDate, $endDate])
             ->whereNotNull('no_invoice')
             ->selectRaw('COUNT(*) as jumlah, COALESCE(SUM(total_or),0) as total')
             ->first();
@@ -98,13 +103,29 @@ class DashboardController extends Controller
         'color' => 'warning',
         'sub_label' => 'Belum jadi estimasi disetujui',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
-          $jumlah = DB::table('v_rep_os_penawaran_rkp')
-            ->where('kode_cabang', $kode_cabang)
-            ->count();
-          $total = DB::table('v_rep_os_penawaran_rkp')
-            ->where('kode_cabang', $kode_cabang)
-            ->sum('total');
-          return ['value' => $total ?? 0, 'sub' => $jumlah . ' SPK', 'is_currency' => true];
+          $row = DB::table('t_estimasi_hdr as a')
+            ->leftJoin('t_kwitansi as g', function($j) {
+              $j->on('a.kode_cabang', '=', 'g.kode_cabang')
+                ->on('a.kode_spk', '=', 'g.kode_spk')
+                ->on('a.kode_estimasi', '=', 'g.kode_estimasi');
+            })
+            ->where('a.kode_cabang', $kode_cabang)
+            ->whereNull('a.batal_oleh')
+            ->whereNull('a.tgl_batal')
+            ->where(function($q) {
+              $q->whereNull('g.tanggal')->orWhere('g.tanggal', '>=', DB::raw('CURDATE()'));
+            })
+            ->selectRaw("
+              COUNT(*) as jumlah,
+              COALESCE(SUM(
+                (a.total_perbaikan - (a.disc_perbaikan * a.total_perbaikan / 100)) +
+                (a.total_sparepart - (a.disc_sparepart * a.total_sparepart / 100)) +
+                (a.total_lain - (a.disc_lain * a.total_lain / 100)) +
+                a.ppn
+              ), 0) as total
+            ")
+            ->first();
+          return ['value' => $row->total ?? 0, 'sub' => ($row->jumlah ?? 0) . ' SPK', 'is_currency' => true];
         },
       ],
 
@@ -114,13 +135,11 @@ class DashboardController extends Controller
         'color' => 'warning',
         'sub_label' => 'Kwitansi belum ditagih',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
-          $jumlah = DB::table('v_rep_os_penagihan_rkp')
+          $row = DB::table('v_rep_os_penagihan_rkp')
             ->where('kode_cabang', $kode_cabang)
-            ->count();
-          $total = DB::table('v_rep_os_penagihan_rkp')
-            ->where('kode_cabang', $kode_cabang)
-            ->sum('total');
-          return ['value' => $total ?? 0, 'sub' => $jumlah . ' SPK', 'is_currency' => true];
+            ->selectRaw('COUNT(*) as jumlah, COALESCE(SUM(total),0) as total')
+            ->first();
+          return ['value' => $row->total ?? 0, 'sub' => ($row->jumlah ?? 0) . ' SPK', 'is_currency' => true];
         },
       ],
 
@@ -144,9 +163,11 @@ class DashboardController extends Controller
         'color' => 'info',
         'sub_label' => 'Total bulan ini',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
-          $jumlah = Spk::where('kode_cabang', $kode_cabang)
-            ->whereMonth('tgl_masuk', $bulan)
-            ->whereYear('tgl_masuk', $tahun)
+          $startDate = sprintf('%04d-%02d-01 00:00:00', $tahun, $bulan);
+          $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
+          $jumlah = DB::table('t_spk_master')
+            ->where('kode_cabang', $kode_cabang)
+            ->whereBetween('tgl_masuk', [$startDate, $endDate])
             ->count();
           return ['value' => $jumlah, 'sub' => 'Total bulan ini', 'is_currency' => false];
         },
@@ -158,9 +179,11 @@ class DashboardController extends Controller
         'color' => 'info',
         'sub_label' => 'Total bulan ini',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
-          $jumlah = Spk::where('kode_cabang', $kode_cabang)
-            ->whereMonth('tgl_keluar', $bulan)
-            ->whereYear('tgl_keluar', $tahun)
+          $startDate = sprintf('%04d-%02d-01 00:00:00', $tahun, $bulan);
+          $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
+          $jumlah = DB::table('t_spk_master')
+            ->where('kode_cabang', $kode_cabang)
+            ->whereBetween('tgl_keluar', [$startDate, $endDate])
             ->whereNotNull('tgl_keluar')
             ->count();
           return ['value' => $jumlah, 'sub' => 'Total bulan ini', 'is_currency' => false];
@@ -172,10 +195,11 @@ class DashboardController extends Controller
         'icon' => 'ri-checkbox-circle-line',
         'color' => 'success',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
+          $startDate = sprintf('%04d-%02d-01 00:00:00', $tahun, $bulan);
+          $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
           $row = DB::table('v_rpt_pelunasan_or')
             ->where('kode_cabang', $kode_cabang)
-            ->whereMonth('tanggal_lunas_or', $bulan)
-            ->whereYear('tanggal_lunas_or', $tahun)
+            ->whereBetween('tanggal_lunas_or', [$startDate, $endDate])
             ->selectRaw('COUNT(*) as jumlah, COALESCE(SUM(total_or),0) as total')
             ->first();
           return ['value' => $row->total ?? 0, 'sub' => ($row->jumlah ?? 0) . ' Invoice', 'is_currency' => true];
@@ -187,8 +211,10 @@ class DashboardController extends Controller
         'icon' => 'ri-time-line',
         'color' => 'danger',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
-          $jumlah = DB::table('v_warning_turun_lapangan')
+          $jumlah = DB::table('t_spk_master')
             ->where('kode_cabang', $kode_cabang)
+            ->where('tgl_turun_lapangan', '>=', '2008-10-01')
+            ->whereNull('kode_keluar')
             ->count();
           return ['value' => $jumlah, 'sub' => null, 'is_currency' => false];
         },
@@ -199,10 +225,12 @@ class DashboardController extends Controller
         'icon' => 'ri-tools-line',
         'color' => 'info',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
-          $jumlah = DB::table('v_rep_turun_lapangan')
+          $startDate = sprintf('%04d-%02d-01 00:00:00', $tahun, $bulan);
+          $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
+          $jumlah = DB::table('t_spk_master')
             ->where('kode_cabang', $kode_cabang)
-            ->whereMonth('tgl_turun_lapangan', $bulan)
-            ->whereYear('tgl_turun_lapangan', $tahun)
+            ->whereBetween('tgl_turun_lapangan', [$startDate, $endDate])
+            ->whereNull('batal_by')
             ->count();
           return ['value' => $jumlah, 'sub' => null, 'is_currency' => false];
         },
@@ -213,10 +241,12 @@ class DashboardController extends Controller
         'icon' => 'ri-heart-pulse-line',
         'color' => 'info',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
-          $jumlah = Spk::where('kode_cabang', $kode_cabang)
+          $startDate = sprintf('%04d-%02d-01 00:00:00', $tahun, $bulan);
+          $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
+          $jumlah = DB::table('t_spk_master')
+            ->where('kode_cabang', $kode_cabang)
             ->where('ada_rawat_jalan', '1')
-            ->whereMonth('tgl_masuk', $bulan)
-            ->whereYear('tgl_masuk', $tahun)
+            ->whereBetween('tgl_masuk', [$startDate, $endDate])
             ->count();
           return ['value' => $jumlah, 'sub' => null, 'is_currency' => false];
         },
@@ -227,8 +257,10 @@ class DashboardController extends Controller
         'icon' => 'ri-file-list-3-line',
         'color' => 'danger',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
-          $jumlah = DB::table('v_rep_estimasi_belum_dibuat')
+          $jumlah = DB::table('t_spk_master')
             ->where('kode_cabang', $kode_cabang)
+            ->whereIn('status_spk', ['01', '02'])
+            ->whereNull('batal_by')
             ->count();
           return ['value' => $jumlah, 'sub' => null, 'is_currency' => false];
         },
@@ -251,10 +283,11 @@ class DashboardController extends Controller
         'icon' => 'ri-mail-send-line',
         'color' => 'danger',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
+          $startDate = sprintf('%04d-%02d-01 00:00:00', $tahun, $bulan);
+          $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
           $jumlah = DB::table('t_kwitansi as k')
             ->where('k.kode_cabang', $kode_cabang)
-            ->whereMonth('k.tanggal', $bulan)
-            ->whereYear('k.tanggal', $tahun)
+            ->whereBetween('k.tanggal', [$startDate, $endDate])
             ->whereNotExists(function ($q) {
               $q->select(DB::raw(1))
                 ->from('t_kirim_kwitansi as tk')
@@ -272,10 +305,11 @@ class DashboardController extends Controller
         'icon' => 'ri-shopping-cart-line',
         'color' => 'primary',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
+          $startDate = sprintf('%04d-%02d-01 00:00:00', $tahun, $bulan);
+          $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
           $jumlah = DB::table('t_permintaan_barang_hdr')
             ->where('kode_cabang', $kode_cabang)
-            ->whereMonth('tanggal_permintaan', $bulan)
-            ->whereYear('tanggal_permintaan', $tahun)
+            ->whereBetween('tanggal_permintaan', [$startDate, $endDate])
             ->count();
           return ['value' => $jumlah, 'sub' => null, 'is_currency' => false];
         },
@@ -286,10 +320,11 @@ class DashboardController extends Controller
         'icon' => 'ri-file-warning-line',
         'color' => 'danger',
         'calc' => function ($kode_cabang, $bulan, $tahun) {
+          $startDate = sprintf('%04d-%02d-01 00:00:00', $tahun, $bulan);
+          $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
           $jumlah = DB::table('t_permintaan_barang_hdr as p')
             ->where('p.kode_cabang', $kode_cabang)
-            ->whereMonth('p.tanggal_permintaan', $bulan)
-            ->whereYear('p.tanggal_permintaan', $tahun)
+            ->whereBetween('p.tanggal_permintaan', [$startDate, $endDate])
             ->whereNotExists(function ($q) {
               $q->select(DB::raw(1))
                 ->from('t_order_hdr as o')
@@ -376,18 +411,18 @@ class DashboardController extends Controller
     $kode_cabang = session('kd_cabang');
     $nama_cabang = session('nm_cabang');
 
-    // Role dashboard dipatok dari users.user_group (FK ke group.id) -> group.nama,
-    // BUKAN user_level (user_level cuma bedain level admin/user biasa, isinya cuma
-    // UL01/UL03, bukan departemen).
+    // Role dashboard dipatok dari users.user_group (FK ke group.id) -> group.nama
     $groupNama = strtoupper(trim(
       DB::table('group')->where('id', $users->user_group ?? 0)->value('nama') ?? ''
     ));
 
-    $tahunRange = DB::selectOne("
-    SELECT MIN(YEAR(tgl_masuk)) as min_tahun, MAX(YEAR(tgl_masuk)) as max_tahun
-    FROM t_spk_master
-    WHERE kode_cabang = ?
-    ", [$kode_cabang]);
+    $tahunRange = Cache::remember("tahun_range_{$kode_cabang}", 3600, function () use ($kode_cabang) {
+      return DB::selectOne("
+        SELECT MIN(YEAR(tgl_masuk)) as min_tahun, MAX(YEAR(tgl_masuk)) as max_tahun
+        FROM t_spk_master
+        WHERE kode_cabang = ?
+      ", [$kode_cabang]);
+    });
 
     $tahunMin = $tahunRange->min_tahun ?? date('Y');
     $tahunMax = $tahunRange->max_tahun ?? date('Y');
@@ -404,9 +439,9 @@ class DashboardController extends Controller
 
     $bulan = request()->input('bulan', date('m'));
 
-    ## Bangun kartu ringkasan bulanan sesuai role (Cache 60s agar refresh instan)
+    ## Bangun kartu ringkasan bulanan & statistik chart (Cache 300s agar refresh instan dan super enteng)
     $cacheKey = "dash_metrics_{$kode_cabang}_{$groupNama}_{$tahun}_{$bulan}";
-    $dashMetrics = Cache::remember($cacheKey, 60, function () use ($groupNama, $kode_cabang, $bulan, $tahun) {
+    $dashMetrics = Cache::remember($cacheKey, 300, function () use ($groupNama, $kode_cabang, $bulan, $tahun) {
       $cardKeys = $this->cardsForRole($groupNama);
       $cardDefs = $this->cardDefinitions();
 
@@ -426,21 +461,58 @@ class DashboardController extends Controller
         ];
       }
 
-      $totalSpkBelumTurunLap = DB::table('v_rep_belum_turun_lapangan')
+      $totalSpkBelumTurunLap = DB::table('t_spk_master')
         ->where('kode_cabang', $kode_cabang)
+        ->whereIn('status_spk', ['01', '02', '03', '04', '05'])
+        ->whereNull('tgl_turun_lapangan')
+        ->whereNull('batal_by')
         ->count();
 
-      $totalSpkPending = DB::table('v_warning_turun_lapangan')
+      $totalSpkPending = DB::table('t_spk_master')
         ->where('kode_cabang', $kode_cabang)
+        ->where('tgl_turun_lapangan', '>=', '2008-10-01')
+        ->whereNull('kode_keluar')
         ->count();
 
-      $totalEstBelumBuat = DB::table('v_rep_estimasi_belum_dibuat')
+      $totalEstBelumBuat = DB::table('t_spk_master')
         ->where('kode_cabang', $kode_cabang)
+        ->whereIn('status_spk', ['01', '02'])
+        ->whereNull('batal_by')
         ->count();
 
       $totalEstBelumKirim = DB::table('v_rep_estimasi_belum_dikirim')
         ->where('kode_cabang', $kode_cabang)
         ->count();
+
+      ## Chart Statistik SPK (Masuk & Keluar)
+      $startYear = sprintf('%04d-01-01 00:00:00', $tahun);
+      $endYear = sprintf('%04d-12-31 23:59:59', $tahun);
+
+      $spkMasukData = array_fill(0, 12, 0);
+      $spkKeluarData = array_fill(0, 12, 0);
+
+      $spkMasuk = DB::table('t_spk_master')
+        ->selectRaw('MONTH(tgl_masuk) as bulan, COUNT(*) as total')
+        ->where('kode_cabang', $kode_cabang)
+        ->whereBetween('tgl_masuk', [$startYear, $endYear])
+        ->groupBy(DB::raw('MONTH(tgl_masuk)'))
+        ->get();
+
+      foreach ($spkMasuk as $row) {
+        $spkMasukData[$row->bulan - 1] = $row->total;
+      }
+
+      $spkKeluar = DB::table('t_spk_master')
+        ->selectRaw('MONTH(tgl_keluar) as bulan, COUNT(*) as total')
+        ->where('kode_cabang', $kode_cabang)
+        ->whereBetween('tgl_keluar', [$startYear, $endYear])
+        ->whereNotNull('tgl_keluar')
+        ->groupBy(DB::raw('MONTH(tgl_keluar)'))
+        ->get();
+
+      foreach ($spkKeluar as $row) {
+        $spkKeluarData[$row->bulan - 1] = $row->total;
+      }
 
       return [
         'cards' => $ringkasanCards,
@@ -448,6 +520,8 @@ class DashboardController extends Controller
         'spkPending' => $totalSpkPending,
         'estBelumBuat' => $totalEstBelumBuat,
         'estBelumKirim' => $totalEstBelumKirim,
+        'spkMasukData' => $spkMasukData,
+        'spkKeluarData' => $spkKeluarData,
       ];
     });
 
@@ -456,31 +530,8 @@ class DashboardController extends Controller
     $totalSpkPending = $dashMetrics['spkPending'];
     $totalEstBelumBuat = $dashMetrics['estBelumBuat'];
     $totalEstBelumKirim = $dashMetrics['estBelumKirim'];
-
-    ## Chart Statistik SPK
-    $spkMasukData = array_fill(0, 12, 0);
-    $spkKeluarData = array_fill(0, 12, 0);
-
-    $spkMasuk = Spk::select(DB::raw('MONTH(tgl_masuk) as bulan'), DB::raw('count(*) as total'))
-      ->where('kode_cabang', $kode_cabang)
-      ->whereYear('tgl_masuk', $tahun)
-      ->groupBy('bulan')
-      ->get();
-
-    foreach ($spkMasuk as $row) {
-      $spkMasukData[$row->bulan - 1] = $row->total;
-    }
-
-    $spkKeluar = Spk::select(DB::raw('MONTH(tgl_keluar) as bulan'), DB::raw('count(*) as total'))
-      ->where('kode_cabang', $kode_cabang)
-      ->whereYear('tgl_keluar', $tahun)
-      ->whereNotNull('tgl_keluar')
-      ->groupBy('bulan')
-      ->get();
-
-    foreach ($spkKeluar as $row) {
-      $spkKeluarData[$row->bulan - 1] = $row->total;
-    }
+    $spkMasukData = $dashMetrics['spkMasukData'];
+    $spkKeluarData = $dashMetrics['spkKeluarData'];
 
     $data['SPK_BLM_TURUN_LAP'] = $totalSpkBelumTurunLap;
     $data['SPK_PENDING'] = $totalSpkPending;
