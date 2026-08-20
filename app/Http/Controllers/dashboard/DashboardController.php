@@ -15,6 +15,7 @@ use App\Models\ProfilePerusahaan;
 use App\Models\Spk;
 use App\Models\Kwitansi;
 use App\Models\LogActivity;
+use App\Helpers\Helpers as Helper;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -379,7 +380,7 @@ class DashboardController extends Controller
     };
   }
 
-  protected function fmtRp($angka): string
+  protected function fmtRp(int|float|string $angka): string
   {
     $angka = (float) $angka;
     if ($angka >= 1000000000) return 'Rp ' . number_format($angka / 1000000000, 1) . 'M';
@@ -394,17 +395,17 @@ class DashboardController extends Controller
    */
   public function Dashboard(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? ' Dashboard';
+    $title = Helper::getTitleMenu($path) ?? ' Dashboard';
 
     $users = Auth::user();
     $startlogin = session('startlogin');
@@ -557,7 +558,7 @@ class DashboardController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {

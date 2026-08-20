@@ -36,7 +36,7 @@ class MenuServiceProvider extends ServiceProvider
     View::composer('*', function ($view) {
       static $cachedPerRequest = [];
 
-      $user = auth()->user();
+      $user = Auth::user();
       $userId = $user?->id;
       
       if (!$userId) {

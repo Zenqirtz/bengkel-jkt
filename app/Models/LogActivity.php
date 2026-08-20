@@ -19,7 +19,7 @@ class LogActivity extends Model
         'updated_by'
     ];
 
-    public static function saveLogActivity($description, $payloads=[])
+    public static function saveLogActivity(string $description, array $payloads = [])
     {
 
         $ip = request()->ip() ?? ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
