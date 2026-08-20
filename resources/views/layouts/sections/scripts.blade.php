@@ -115,3 +115,33 @@
     });
   })();
 </script>
+
+<script>
+  /* ===== Global Ripple Effect on Buttons ===== */
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.btn');
+    if (!btn || btn.disabled) return;
+    var ripple = document.createElement('span');
+    ripple.classList.add('ripple-effect');
+    var rect = btn.getBoundingClientRect();
+    var size = Math.max(rect.width, rect.height);
+    ripple.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + (e.clientX - rect.left - size / 2) + 'px;top:' + (e.clientY - rect.top - size / 2) + 'px;position:absolute;';
+    btn.appendChild(ripple);
+    ripple.addEventListener('animationend', function() { ripple.remove(); });
+  });
+
+  /* ===== Re-animate DataTable rows on every draw ===== */
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof $ !== 'undefined') {
+      $(document).on('draw.dt', 'table', function() {
+        $(this).find('tbody tr').each(function(i) {
+          var tr = this;
+          tr.style.animation = 'none';
+          void tr.offsetHeight;
+          tr.style.animation = '';
+          tr.style.animationDelay = (i * 0.04) + 's';
+        });
+      });
+    }
+  });
+</script>
