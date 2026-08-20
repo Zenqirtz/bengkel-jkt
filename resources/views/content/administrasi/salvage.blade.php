@@ -2,7 +2,167 @@
 
 @section('title', $title)
 
-<!-- Vendor Styles -->
+<!-- Page Style -->
+@section('page-style')
+<style>
+  /* ===== CARD ENTRANCE ANIMATION ===== */
+  .card {
+    animation: cardSlideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.13) !important;
+    transform: translateY(-2px);
+  }
+
+  @keyframes cardSlideUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== CARD HEADER ===== */
+  .card-header {
+    animation: fadeInDown 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.08s;
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== TITLE ===== */
+  .card-header .card-title h5 {
+    position: relative;
+    display: inline-block;
+  }
+  .card-header .card-title h5::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--bs-primary);
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .card-header .card-title h5:hover::after {
+    width: 100%;
+  }
+
+  /* ===== BUTTON SMOOTH & RIPPLE ===== */
+  .btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+  .btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+  .btn:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: none;
+  }
+  .btn .ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.38);
+    transform: scale(0);
+    animation: rippleAnim 0.55s linear;
+    pointer-events: none;
+  }
+  @keyframes rippleAnim {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  /* ===== TABLE ROW FADE-IN ===== */
+  .datatables-spk tbody tr,
+  .datatables-salvage tbody tr {
+    animation: rowFadeIn 0.35s ease both;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .datatables-spk tbody tr:hover,
+  .datatables-salvage tbody tr:hover {
+    transform: scale(1.002);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    z-index: 1;
+    position: relative;
+  }
+  @keyframes rowFadeIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Stagger row animation via nth-child */
+  .datatables-spk tbody tr:nth-child(1)  { animation-delay: 0.03s; }
+  .datatables-spk tbody tr:nth-child(2)  { animation-delay: 0.06s; }
+  .datatables-spk tbody tr:nth-child(3)  { animation-delay: 0.09s; }
+  .datatables-spk tbody tr:nth-child(4)  { animation-delay: 0.12s; }
+  .datatables-spk tbody tr:nth-child(5)  { animation-delay: 0.15s; }
+  .datatables-spk tbody tr:nth-child(6)  { animation-delay: 0.18s; }
+  .datatables-spk tbody tr:nth-child(7)  { animation-delay: 0.21s; }
+  .datatables-spk tbody tr:nth-child(8)  { animation-delay: 0.24s; }
+  .datatables-spk tbody tr:nth-child(9)  { animation-delay: 0.27s; }
+  .datatables-spk tbody tr:nth-child(10) { animation-delay: 0.30s; }
+
+  /* ===== MODAL TRANSITIONS ===== */
+  .modal.fade .modal-dialog {
+    transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.38s ease !important;
+    transform: translateY(-30px) scale(0.97);
+    opacity: 0;
+  }
+  .modal.show .modal-dialog {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  .modal-content {
+    transition: box-shadow 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  }
+
+  /* ===== FORM INPUT FOCUS GLOW ===== */
+  .form-control, .form-select {
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
+  }
+  .form-control:focus, .form-select:focus {
+    transform: scale(1.012);
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.2) !important;
+  }
+
+  /* ===== HR DIVIDER SLIDE-IN ===== */
+  hr.container-m-nx {
+    animation: hrSlide 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.2s;
+    transform-origin: left;
+  }
+  @keyframes hrSlide {
+    from { transform: scaleX(0); opacity: 0; }
+    to   { transform: scaleX(1); opacity: 1; }
+  }
+
+  /* ===== INLINE SPACING BUTTONS STAGGER ===== */
+  .demo-inline-spacing .btn:nth-child(1) { animation: btnPopIn 0.4s cubic-bezier(0.22,1,0.36,1) 0.15s both; }
+  .demo-inline-spacing .btn:nth-child(2) { animation: btnPopIn 0.4s cubic-bezier(0.22,1,0.36,1) 0.25s both; }
+  .demo-inline-spacing .btn:nth-child(3) { animation: btnPopIn 0.4s cubic-bezier(0.22,1,0.36,1) 0.35s both; }
+  @keyframes btnPopIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.9); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ===== CHECKBOX SMOOTH ===== */
+  input[type="checkbox"] {
+    transition: transform 0.2s ease;
+    cursor: pointer;
+  }
+  input[type="checkbox"]:hover {
+    transform: scale(1.15);
+  }
+</style>
+@endsection
+
+
 @section('vendor-style')
 @vite([
 'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss', 
