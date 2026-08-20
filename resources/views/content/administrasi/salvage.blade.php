@@ -206,6 +206,31 @@
 <!-- Page Scripts -->
 @section('page-script')
   <script src="{{ asset('assets/js/salvage.js') }}"></script>
+  <script>
+    // ===== Ripple Effect on Buttons =====
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.btn');
+      if (!btn) return;
+      const ripple = document.createElement('span');
+      ripple.classList.add('ripple-effect');
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - rect.left - size/2}px;top:${e.clientY - rect.top - size/2}px;`;
+      btn.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove());
+    });
+
+    // ===== Re-animate table rows on DataTable draw =====
+    $(document).on('draw.dt', '.datatables-spk, .datatables-salvage', function() {
+      $(this).find('tbody tr').each(function(i) {
+        const tr = this;
+        tr.style.animation = 'none';
+        tr.offsetHeight; // reflow
+        tr.style.animation = '';
+        tr.style.animationDelay = (i * 0.04) + 's';
+      });
+    });
+  </script>
 @endsection
 
 @section('content')
