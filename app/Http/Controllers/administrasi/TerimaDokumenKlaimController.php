@@ -15,6 +15,7 @@ use App\Models\Spk;
 use App\Models\Estimasi;
 use App\Models\TerimaDokumenKlaim;
 use App\Models\LogActivity;
+use App\Helpers\Helpers as Helper;
 use Carbon\Carbon;
 
 class TerimaDokumenKlaimController extends Controller
@@ -25,17 +26,17 @@ class TerimaDokumenKlaimController extends Controller
    */
   public function TerimaDokumenKlaim(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Tanda Terima Dokumen Klaim';
+    $title = Helper::getTitleMenu($path) ?? 'Tanda Terima Dokumen Klaim';
 
     $user_cabang = session('kd_cabang');
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
@@ -60,7 +61,7 @@ class TerimaDokumenKlaimController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -440,7 +441,7 @@ class TerimaDokumenKlaimController extends Controller
    * Show the form for editing the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function edit($id): JsonResponse
   {
