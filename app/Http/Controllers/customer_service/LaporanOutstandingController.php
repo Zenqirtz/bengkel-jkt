@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\customer_service;
 
@@ -17,6 +17,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel; // EXPORT EXCEL
 use App\Exports\LaporanOutstandingExport;    // EXPORT EXCEL
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanOutstandingController extends Controller
 {
   /**
@@ -25,22 +27,22 @@ class LaporanOutstandingController extends Controller
    */
   public function LaporanOutstanding(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Kendaraan';
+    $title = Helper::getTitleMenu($path) ?? 'Kendaraan';
 
     $user_cabang = session('kd_cabang');
 
-    $months = \Helper::listMonths();
-    $years = \Helper::listYears();
+    $months = Helper::listMonths();
+    $years = Helper::listYears();
     $jenis_laporan = [
       '' => 'Pilih Jenis Laporan',
       'periode' => 'Per Periode',
@@ -281,7 +283,7 @@ class LaporanOutstandingController extends Controller
       $tglAwal = $request->input('tgl_awal', date('d/m/Y'));
       $periodeStr = $tglAwal;
     } elseif($request->jenis_laporan == "bulan") {
-      $months = \Helper::listMonths();
+      $months = Helper::listMonths();
       $periodeStr = $months[$request->bulan] . ' ' . $request->tahun2;
     } elseif($request->jenis_laporan == "tahun") {
       $periodeStr = $request->tahun;
@@ -298,7 +300,9 @@ class LaporanOutstandingController extends Controller
     $desc = "Export Laporan Outstanding OR";
     LogActivity::saveLogActivity($desc, $filters);
 
-    // Masukkan $periodeStr dan $cabangData ke dalam class Export
+    // Masukkan $periodeStr dan $cabangData ke dalam use App\Helpers\Helpers as Helper;
+
+class Export
     return Excel::download(new LaporanOutstandingExport($filters, $cabangData, $periodeStr), $fileName);
   }
 
@@ -319,7 +323,7 @@ class LaporanOutstandingController extends Controller
       $tglAwal = date('d/m/Y', strtotime($filters['tgl_awal']));
       $periodeStr = $tglAwal;
     } elseif($filters['jenis_laporan'] == "bulan") {
-      $months = \Helper::listMonths();
+      $months = Helper::listMonths();
       $periodeStr = $months[$filters['bulan']] . ' ' . $filters['tahun2'];
     } elseif($filters['jenis_laporan'] == "tahun") {
       $periodeStr = $filters['tahun'];

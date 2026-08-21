@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\setting;
 
@@ -14,6 +14,8 @@ use App\Models\Parameter;
 use App\Models\LogActivity;
 // use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class ParameterController extends Controller
 {
   /**
@@ -22,17 +24,17 @@ class ParameterController extends Controller
    */
   public function Parameter(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Parameter';
+    $title = Helper::getTitleMenu($path) ?? 'Parameter';
 
     $nama_tabel = Parameter::query()
       ->select('nama_tabel as kode', 'nama_tabel as keterangan')

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -16,6 +16,8 @@ use App\Models\PenerimaanGabunganDetail;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class PenerimaanGabunganController extends Controller
 {
   /**
@@ -24,10 +26,10 @@ class PenerimaanGabunganController extends Controller
    */
   public function PenerimaanGabungan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -35,7 +37,7 @@ class PenerimaanGabunganController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Penerimaan Gabungan';
+    $title = Helper::getTitleMenu($path) ?? 'Penerimaan Gabungan';
 
     $user_cabang = session('kd_cabang');
 
@@ -499,7 +501,7 @@ class PenerimaanGabunganController extends Controller
 
       } else {
         // === INSERT ===
-        $noTransaksi = \Helper::getNomorTransaksi($user_cabang, 'LCR');
+        $noTransaksi = Helper::getNomorTransaksi($user_cabang, 'LCR');
 
         $cek = PenerimaanGabungan::where('kode_cabang', $user_cabang)
           ->where('no_transaksi', $noTransaksi)->first();
@@ -527,7 +529,7 @@ class PenerimaanGabunganController extends Controller
         $ok = $header;
 
         if ($ok)
-          \Helper::updateNomorTransaksi($user_cabang, 'LCR');
+          Helper::updateNomorTransaksi($user_cabang, 'LCR');
 
         $desc = $ok ? 'Berhasil Tambah Penerimaan Gabungan' : 'Gagal Tambah Penerimaan Gabungan';
         $idHeader = $header->id ?? null;

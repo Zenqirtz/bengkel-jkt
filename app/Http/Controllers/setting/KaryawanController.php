@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\setting;
 
@@ -17,6 +17,8 @@ use App\Models\LogActivity;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image; // PENTING: Import Facade Intervention Image
 
+use App\Helpers\Helpers as Helper;
+
 class KaryawanController extends Controller
 {
   /**
@@ -25,17 +27,17 @@ class KaryawanController extends Controller
    */
   public function Karyawan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Karyawan';
+    $title = Helper::getTitleMenu($path) ?? 'Karyawan';
 
     $user_cabang = session('kd_cabang');
     $posisi = PosisiPekerjaan::query()->orderBy('seq_no', 'asc')->get();

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\setting;
 
@@ -13,6 +13,8 @@ use App\Models\PeriodePembukuan;
 use App\Models\LogActivity;
 // use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class PeriodePembukuanController extends Controller
 {
   /**
@@ -21,17 +23,17 @@ class PeriodePembukuanController extends Controller
    */
   public function PeriodePembukuan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Periode Pembukuan';
+    $title = Helper::getTitleMenu($path) ?? 'Periode Pembukuan';
 
     // $tgls = [];
     // for ($i=1; $i <= 31; $i++) { 

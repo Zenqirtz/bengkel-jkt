@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanEstimasiPerTahunExport;
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanEstimasiPerTahunController extends Controller
 {
   /**
@@ -18,10 +20,10 @@ class LaporanEstimasiPerTahunController extends Controller
    */
   public function LaporanEstimasiPerTahun(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -29,11 +31,11 @@ class LaporanEstimasiPerTahunController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Estimasi Per Tahun';
+    $title = Helper::getTitleMenu($path) ?? 'Estimasi Per Tahun';
 
     $user_cabang = session('kd_cabang');
-    $months = \Helper::listMonths();
-    $years = \Helper::listYears();
+    $months = Helper::listMonths();
+    $years = Helper::listYears();
 
     $jenis_laporan = [
       'bulan' => 'Laporan Rekap Per Tipe'
@@ -247,7 +249,7 @@ class LaporanEstimasiPerTahunController extends Controller
     $filters = $request->all();
 
     // Format String Periode
-    $months = \Helper::listMonths();
+    $months = Helper::listMonths();
     $periodeStr = $months[$request->bulan] . ' ' . $request->tahun;
 
     $fileName = 'Laporan_Estimasi_Per_Tahun_' . date('Ymd_His') . '.xlsx';
@@ -268,7 +270,7 @@ class LaporanEstimasiPerTahunController extends Controller
     $filters = $request->all();
 
     // Format String Periode
-    $months = \Helper::listMonths();
+    $months = Helper::listMonths();
     $periodeStr = $months[$filters['bulan']] . ' ' . $filters['tahun'];
 
     // Query data

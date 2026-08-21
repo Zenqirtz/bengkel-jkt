@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -13,6 +13,8 @@ use App\Exports\LaporanChBgBelumKliringExport;
 use App\Models\LogActivity;
 use App\Models\Bank;
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanChBgBelumKliringController extends Controller
 {
   /**
@@ -20,10 +22,10 @@ class LaporanChBgBelumKliringController extends Controller
    */
   public function LaporanChBgBelumKliring(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -31,7 +33,7 @@ class LaporanChBgBelumKliringController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'CH BG Belum Kliring';
+    $title = Helper::getTitleMenu($path) ?? 'CH BG Belum Kliring';
 
     $user_cabang = session('kd_cabang');
 

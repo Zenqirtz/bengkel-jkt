@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -18,6 +18,8 @@ use App\Models\BuktiPenerimaanDetail;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class BuktiPenerimaanController extends Controller
 {
   /**
@@ -26,17 +28,17 @@ class BuktiPenerimaanController extends Controller
    */
   public function BuktiPenerimaan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Bukti Penerimaan';
+    $title = Helper::getTitleMenu($path) ?? 'Bukti Penerimaan';
 
     $user_cabang = session('kd_cabang');
     $bank = Bank::query()->select('kode_bank', 'nama_bank')->where('is_active', 'Y')->orderBy('nama_bank', 'asc')->get();
@@ -409,7 +411,7 @@ class BuktiPenerimaanController extends Controller
         }
 
         ## Nomor Bukti Penerimaan
-        $penomoran = \Helper::getNomorTransaksi($user_cabang, 'TUM');
+        $penomoran = Helper::getNomorTransaksi($user_cabang, 'TUM');
 
         $cekspk = BuktiPenerimaan::where('no_transaksi', $penomoran)->first();
         if (!empty($cekspk)) {
@@ -417,7 +419,7 @@ class BuktiPenerimaanController extends Controller
         }
 
         ## Nomor Voucher Masuk
-        $noVoucher = \Helper::getNomorVoucher($user_cabang, $request->kode_bank, 'NO_VOUCHER_MASUK');
+        $noVoucher = Helper::getNomorVoucher($user_cabang, $request->kode_bank, 'NO_VOUCHER_MASUK');
 
         $data = [
           'kode_cabang' => $user_cabang,
@@ -466,7 +468,7 @@ class BuktiPenerimaanController extends Controller
           }
 
           ## Update Nomor Bukti Penerimaan
-          $res = \Helper::updateNomorTransaksi($user_cabang, 'TUM');
+          $res = Helper::updateNomorTransaksi($user_cabang, 'TUM');
         }
 
         $data2['HEADER'] = $data;
@@ -585,7 +587,7 @@ class BuktiPenerimaanController extends Controller
     // $logo_cabang = $dest.DIRECTORY_SEPARATOR.$cabang->logo_cabang;
     // $file_logo = (is_file($logo_cabang)) ? "1" : "0";
 
-    $data->terbilang = \Helper::terbilang_rupiah($data->total);
+    $data->terbilang = Helper::terbilang_rupiah($data->total);
 
     $data->tanggal_ch_bg = blank($data->tanggal_ch_bg) ? '' : date("d-M-Y", strtotime($data->tanggal_ch_bg));
 

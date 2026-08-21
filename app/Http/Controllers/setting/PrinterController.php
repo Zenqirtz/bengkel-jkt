@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\setting;
 
@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Printer;
 // use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class PrinterController extends Controller
 {
   /**
@@ -20,17 +22,17 @@ class PrinterController extends Controller
    */
   public function Printer(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Template Layout';
+    $title = Helper::getTitleMenu($path) ?? 'Template Layout';
 
     return view('content.setting.printer', [
       'title' => $title,

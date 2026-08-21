@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\gudang;
 
@@ -25,6 +25,8 @@ use App\Models\LogActivity;
 use Carbon\Carbon;
 use App\Models\Notifikasi;
 
+use App\Helpers\Helpers as Helper;
+
 class InputPembelianController extends Controller
 {
   /**
@@ -33,17 +35,17 @@ class InputPembelianController extends Controller
    */
   public function InputPembelian(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Input Pembelian';
+    $title = Helper::getTitleMenu($path) ?? 'Input Pembelian';
 
     $user_cabang = session('kd_cabang');
     $tipe_barang = Parameter::query()->where('nama_tabel', 'TIPE_BARANG')->orderBy('no_urut', 'asc')->get();
@@ -902,7 +904,7 @@ class InputPembelianController extends Controller
       }
 
       ## Nomor Input Pembelian
-      $penomoran = \Helper::getNomorTransaksi($user_cabang, $jenis);
+      $penomoran = Helper::getNomorTransaksi($user_cabang, $jenis);
 
       $cekspk = InputPembelian::where('kode_input', $penomoran)->first();
       if (!empty($cekspk)) {
@@ -962,7 +964,7 @@ class InputPembelianController extends Controller
         }
 
         ## Update Nomor Input Pembelian
-        $res = \Helper::updateNomorTransaksi($user_cabang, $jenis);
+        $res = Helper::updateNomorTransaksi($user_cabang, $jenis);
       }
 
 

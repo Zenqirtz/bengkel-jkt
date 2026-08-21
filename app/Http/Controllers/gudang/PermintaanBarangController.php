@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\gudang;
 
@@ -19,6 +19,8 @@ use App\Models\LogActivity;
 use Carbon\Carbon;
 use App\Models\Notifikasi;
 
+use App\Helpers\Helpers as Helper;
+
 class PermintaanBarangController extends Controller
 {
   /**
@@ -27,17 +29,17 @@ class PermintaanBarangController extends Controller
    */
   public function PermintaanBarang(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Permintaan Barang';
+    $title = Helper::getTitleMenu($path) ?? 'Permintaan Barang';
 
     $user_cabang = session('kd_cabang');
     $tipe_barang = Parameter::query()->select('kode', 'keterangan')->where('nama_tabel', 'TIPE_BARANG')->where('kode', '=', 'S')->orderBy('no_urut', 'asc')->get();
@@ -861,7 +863,7 @@ class PermintaanBarangController extends Controller
         $seq_no = $lastNum + 1;
 
         ## Nomor Permintaan Pembelian
-        $penomoran = \Helper::getNomorTransaksi($user_cabang, 'PB');
+        $penomoran = Helper::getNomorTransaksi($user_cabang, 'PB');
 
         $cekspk = PermintaanBarang::where('kode_permintaan', $penomoran)->first();
         if (!empty($cekspk)) {
@@ -939,7 +941,7 @@ class PermintaanBarangController extends Controller
           }
 
           ## Update Nomor Permintaan Barang
-          $res = \Helper::updateNomorTransaksi($user_cabang, 'PB');
+          $res = Helper::updateNomorTransaksi($user_cabang, 'PB');
         }
 
         $data2['HEADER'] = $data;

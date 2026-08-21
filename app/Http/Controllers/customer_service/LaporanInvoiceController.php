@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\customer_service;
 
@@ -17,6 +17,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel; // EXPORT EXCEL
 use App\Exports\LaporanInvoiceExport;    // EXPORT EXCEL
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanInvoiceController extends Controller
 {
   /**
@@ -25,22 +27,22 @@ class LaporanInvoiceController extends Controller
    */
   public function LaporanInvoice(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'SPK';
+    $title = Helper::getTitleMenu($path) ?? 'SPK';
 
     $user_cabang = session('kd_cabang');
 
-    $months = \Helper::listMonths();
-    $years = \Helper::listYears();
+    $months = Helper::listMonths();
+    $years = Helper::listYears();
     $tipe_laporan = [
       'inv_belum_terbit' => 'Invoice OR Belum Terbit', 
       'inv_terbit' => 'Invoice OR Terbit', 
@@ -471,7 +473,7 @@ class LaporanInvoiceController extends Controller
       $tglAkhir = $request->input('tgl_akhir', date('d/m/Y'));
       $periodeStr = $tglAwal . ' s/d ' . $tglAkhir;
     } elseif($request->jenis_laporan == "bulan") {
-      $months = \Helper::listMonths();
+      $months = Helper::listMonths();
       $periodeStr = $months[$request->bulan] . ' ' . $request->tahun2;
     } elseif($request->jenis_laporan == "tahun") {
       $periodeStr = $request->tahun;
@@ -506,7 +508,9 @@ class LaporanInvoiceController extends Controller
       LogActivity::saveLogActivity($desc, $filters);
     }
 
-    // Masukkan $periodeStr dan $cabangData ke dalam class Export
+    // Masukkan $periodeStr dan $cabangData ke dalam use App\Helpers\Helpers as Helper;
+
+class Export
     return Excel::download(new LaporanInvoiceExport($filters, $cabangData, $periodeStr), $fileName);
   }
 
@@ -528,7 +532,7 @@ class LaporanInvoiceController extends Controller
       $tglAkhir = date('d/m/Y', strtotime($filters['tgl_akhir']));
       $periodeStr = $tglAwal . ' s/d ' . $tglAkhir;
     } elseif($filters['jenis_laporan'] == "bulan") {
-      $months = \Helper::listMonths();
+      $months = Helper::listMonths();
       $periodeStr = $months[$filters['bulan']] . ' ' . $filters['tahun2'];
     } elseif($filters['jenis_laporan'] == "tahun") {
       $periodeStr = $filters['tahun'];

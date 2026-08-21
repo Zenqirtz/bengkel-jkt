@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\gudang;
 
@@ -17,6 +17,8 @@ use App\Models\PemakaianBahan;
 use App\Models\PosisiPekerjaan;
 use App\Models\LogActivity;
 
+use App\Helpers\Helpers as Helper;
+
 class PemakaianBahanController extends Controller
 {
   /**
@@ -25,17 +27,17 @@ class PemakaianBahanController extends Controller
    */
   public function PemakaianBahan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Data Bahan';
+    $title = Helper::getTitleMenu($path) ?? 'Data Bahan';
 
     $user_cabang = session('kd_cabang');
     $pekerjaan = PosisiPekerjaan::query()->select('kode_posisi', 'posisi_pekerjaan')->where('is_active', 'Y')->whereIn('kode_posisi', ['00002', '00003'])->orderBy('seq_no', 'asc')->get();

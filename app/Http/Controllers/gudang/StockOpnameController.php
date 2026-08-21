@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\gudang;
 
@@ -21,6 +21,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel; // EXPORT EXCEL
 use App\Exports\StockOpnameExport;    // EXPORT EXCEL
 
+use App\Helpers\Helpers as Helper;
+
 class StockOpnameController extends Controller
 {
   /**
@@ -29,22 +31,22 @@ class StockOpnameController extends Controller
    */
   public function StockOpname(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Stock Opname';
+    $title = Helper::getTitleMenu($path) ?? 'Stock Opname';
 
     $user_cabang = session('kd_cabang');
 
-    $months = \Helper::listMonths();
-    $years = \Helper::listYears();
+    $months = Helper::listMonths();
+    $years = Helper::listYears();
     $tipe_barang = Parameter::query()->where('nama_tabel', 'TIPE_BARANG')->orderBy('no_urut', 'asc')->get();
 
     $datafilter = session('datafilter');
@@ -669,7 +671,7 @@ class StockOpnameController extends Controller
 
     // --- TAMBAHAN: Format String Periode ---
 
-    $months = \Helper::listMonths();
+    $months = Helper::listMonths();
     $periodeStr = $months[$request->bulan] . ' ' . $request->tahun;
     // ---------------------------------------
 

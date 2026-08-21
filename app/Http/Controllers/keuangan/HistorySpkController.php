@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -19,6 +19,8 @@ use App\Models\Asuransi;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class HistorySpkController extends Controller
 {
   /**
@@ -27,17 +29,17 @@ class HistorySpkController extends Controller
    */
   public function HistorySpk(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'SPK';
+    $title = Helper::getTitleMenu($path) ?? 'SPK';
 
     $user_cabang = session('kd_cabang');
     $kendaraan = Kendaraan::query()->select('id','no_polisi')->where('kode_cabang', $user_cabang)->orderBy('no_polisi', 'asc')->get();
@@ -50,7 +52,7 @@ class HistorySpkController extends Controller
     $perantara = Perantara::query()->select('kode_perantara','nama_perantara')->where('kode_cabang', $user_cabang)->where('is_active', 'Y')->orderBy('nama_perantara', 'asc')->get();
     $asuransi = Asuransi::query()->select('kode_pelanggan','nama_pelanggan')->where('kode_cabang', $user_cabang)->where('is_active', 'Y')->orderBy('nama_pelanggan', 'asc')->get();
 
-    $nomorspk = \Helper::getNomorTransaksi($user_cabang, 'SPK');
+    $nomorspk = Helper::getNomorTransaksi($user_cabang, 'SPK');
     $tglspk = date("d/m/Y");
     $periode = date("F Y");
 
@@ -397,7 +399,7 @@ class HistorySpkController extends Controller
 
       // $dtKend = DB::table('v_mobil')->where('id', $request->no_polisi)->first();
       $dtKend = DB::table('v_mobil')->where('kode_cabang', $user_cabang)->where('no_polisi', 'like', '%' . $request->no_polisi . '%')->first();
-      $nomorspk = \Helper::getNomorTransaksi($user_cabang, 'SPK');
+      $nomorspk = Helper::getNomorTransaksi($user_cabang, 'SPK');
 
       $cekspk = Spk::where('kode_spk', $nomorspk)->first();
       if (!empty($cekspk)) {
@@ -446,7 +448,7 @@ class HistorySpkController extends Controller
 
       if ($ok) {
         ## Update Nomor SPK
-        $res = \Helper::updateNomorTransaksi($user_cabang, 'SPK');
+        $res = Helper::updateNomorTransaksi($user_cabang, 'SPK');
       }
 
       ## Log Activity

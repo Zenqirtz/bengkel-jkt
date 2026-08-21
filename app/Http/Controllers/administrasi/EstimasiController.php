@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -31,6 +31,8 @@ use Carbon\Carbon;
 use App\Exports\EstimasiExport;
 use Maatwebsite\Excel\Facades\Excel;
 
+use App\Helpers\Helpers as Helper;
+
 class EstimasiController extends Controller
 {
   /**
@@ -39,17 +41,17 @@ class EstimasiController extends Controller
    */
   public function Estimasi(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? ' Estimasi';
+    $title = Helper::getTitleMenu($path) ?? ' Estimasi';
 
     $user_cabang = session('kd_cabang');
     $username = Auth::user()->username;
@@ -890,7 +892,7 @@ class EstimasiController extends Controller
         ], 200);
       }
 
-      $penomoran = \Helper::getNomorTransaksi($user_cabang, 'ES');
+      $penomoran = Helper::getNomorTransaksi($user_cabang, 'ES');
 
       $cekspk = Estimasi::where('kode_estimasi', $penomoran)->first();
       if (!empty($cekspk)) {
@@ -1011,7 +1013,7 @@ class EstimasiController extends Controller
         );
 
         ## Update Nomor Estimasi
-        $res = \Helper::updateNomorTransaksi($user_cabang, 'ES', $penomoran);
+        $res = Helper::updateNomorTransaksi($user_cabang, 'ES', $penomoran);
       }
 
       ## Log Activity
@@ -1146,7 +1148,7 @@ class EstimasiController extends Controller
     // $data->total_lain = number_format($data->total_lain, 0, ".", ",");
     // $data->total = number_format($data->total, 0, ".", ",");
 
-    $data->terbilang = \Helper::terbilang_rupiah($data->total);
+    $data->terbilang = Helper::terbilang_rupiah($data->total);
 
     $cabang = ProfilePerusahaan::where('kode_cabang', $data->kode_cabang)->first();
     $cabang->alamat1 = sprintf("%s %s %s", $cabang->alamat1, $cabang->alamat2, $cabang->alamat3);

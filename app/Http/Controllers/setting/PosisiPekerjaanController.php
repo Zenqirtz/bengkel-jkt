@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\setting;
 
@@ -15,6 +15,8 @@ use App\Models\Parameter;
 use App\Models\LogActivity;
 // use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class PosisiPekerjaanController extends Controller
 {
   /**
@@ -23,17 +25,17 @@ class PosisiPekerjaanController extends Controller
    */
   public function PosisiPekerjaan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Posisi Pekerjaan';
+    $title = Helper::getTitleMenu($path) ?? 'Posisi Pekerjaan';
 
     $status_aktif = Parameter::query()->where('nama_tabel', 'STATUS')->orderBy('no_urut', 'asc')->get();
 

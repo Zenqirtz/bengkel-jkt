@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\customer_service;
 
@@ -22,6 +22,8 @@ use App\Models\DokumenFile;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image; // PENTING: Import Facade Intervention Image
 
+use App\Helpers\Helpers as Helper;
+
 class KendaraanController extends Controller
 {
   /**
@@ -30,17 +32,17 @@ class KendaraanController extends Controller
    */
   public function Kendaraan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Kendaraan';
+    $title = Helper::getTitleMenu($path) ?? 'Kendaraan';
 
     $user_cabang = session('kd_cabang');
     $pemilik = Pemilik::query()->select('kode_pemilik','nama_pemilik')->where('kode_cabang', $user_cabang)->orderBy('nama_pemilik', 'asc')->get();

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\setting;
 
@@ -15,6 +15,8 @@ use App\Models\Group;
 use App\Models\LogActivity;
 // use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class GroupPrivilegeController extends Controller
 {
   /**
@@ -23,15 +25,15 @@ class GroupPrivilegeController extends Controller
    */
   public function GroupPrivilege(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Group Privilege';
+    $title = Helper::getTitleMenu($path) ?? 'Group Privilege';
 
     $groupId = session('idGroup');
 

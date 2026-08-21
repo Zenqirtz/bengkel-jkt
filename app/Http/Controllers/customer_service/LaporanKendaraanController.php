@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\customer_service;
 
@@ -18,6 +18,8 @@ use Maatwebsite\Excel\Facades\Excel; // EXPORT EXCEL
 use App\Exports\LaporanKendaraanExport;    // EXPORT EXCEL
 use App\Exports\LaporanMobilMasukExport;    // EXPORT EXCEL
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanKendaraanController extends Controller
 {
   /**
@@ -26,22 +28,22 @@ class LaporanKendaraanController extends Controller
    */
   public function LaporanKendaraan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Kendaraan';
+    $title = Helper::getTitleMenu($path) ?? 'Kendaraan';
 
     $user_cabang = session('kd_cabang');
 
-    $months = \Helper::listMonths();
-    $years = \Helper::listYears();
+    $months = Helper::listMonths();
+    $years = Helper::listYears();
     $tipe_laporan = [
       'mobil_masuk' => 'Mobil Masuk', 
       'mobil_belum_turun' => 'Mobil Belum Turun Lapangan', 
@@ -401,7 +403,7 @@ class LaporanKendaraanController extends Controller
       $tglAkhir = $request->input('tgl_akhir', date('d/m/Y'));
       $periodeStr = $tglAwal . ' s/d ' . $tglAkhir;
     } elseif($request->jenis_laporan == "bulan") {
-      $months = \Helper::listMonths();
+      $months = Helper::listMonths();
       $periodeStr = $months[$request->bulan] . ' ' . $request->tahun2;
     } elseif($request->jenis_laporan == "tahun") {
       $periodeStr = $request->tahun;
@@ -430,7 +432,9 @@ class LaporanKendaraanController extends Controller
       LogActivity::saveLogActivity($desc, $filters);
     }
 
-    // Masukkan $periodeStr dan $cabangData ke dalam class Export
+    // Masukkan $periodeStr dan $cabangData ke dalam use App\Helpers\Helpers as Helper;
+
+class Export
     if($request->tipe_laporan == "mobil_masuk") {
       return Excel::download(new LaporanMobilMasukExport($filters, $cabangData, $periodeStr), $fileName);
     } else {
@@ -456,7 +460,7 @@ class LaporanKendaraanController extends Controller
       $tglAkhir = date('d/m/Y', strtotime($filters['tgl_akhir']));
       $periodeStr = $tglAwal . ' s/d ' . $tglAkhir;
     } elseif($filters['jenis_laporan'] == "bulan") {
-      $months = \Helper::listMonths();
+      $months = Helper::listMonths();
       $periodeStr = $months[$filters['bulan']] . ' ' . $filters['tahun2'];
     } elseif($filters['jenis_laporan'] == "tahun") {
       $periodeStr = $filters['tahun'];

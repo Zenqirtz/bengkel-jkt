@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -18,6 +18,8 @@ use App\Models\Estimasi;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class InvoiceController extends Controller
 {
   /**
@@ -26,17 +28,17 @@ class InvoiceController extends Controller
    */
   public function Invoice(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? ' Invoice';
+    $title = Helper::getTitleMenu($path) ?? ' Invoice';
 
     $user_cabang = session('kd_cabang');
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
@@ -370,7 +372,7 @@ class InvoiceController extends Controller
           ], 200);
         }
 
-        $penomoran = \Helper::getNomorTransaksi($user_cabang, 'KR');
+        $penomoran = Helper::getNomorTransaksi($user_cabang, 'KR');
 
         $cekspk = Kwitansi::where('kode_kirim_kwitansi', $penomoran)->first();
         if (!empty($cekspk)) {
@@ -419,7 +421,7 @@ class InvoiceController extends Controller
           );
 
           ## Update Nomor Kwitansi
-          $res = \Helper::updateNomorTransaksi($user_cabang, 'KR', $penomoran);
+          $res = Helper::updateNomorTransaksi($user_cabang, 'KR', $penomoran);
         }
 
         ## Log Activity
@@ -530,7 +532,7 @@ class InvoiceController extends Controller
           ], 200);
         }
 
-        $penomoran = \Helper::getNomorTransaksi($user_cabang, 'KWT');
+        $penomoran = Helper::getNomorTransaksi($user_cabang, 'KWT');
 
         $cekspk = Kwitansi::where('kode_kwitansi', $penomoran)->first();
         if (!empty($cekspk)) {
@@ -579,7 +581,7 @@ class InvoiceController extends Controller
           );
 
           ## Update Nomor Kwitansi
-          $res = \Helper::updateNomorTransaksi($user_cabang, 'KWT', $penomoran);
+          $res = Helper::updateNomorTransaksi($user_cabang, 'KWT', $penomoran);
         }
 
         ## Log Activity
@@ -731,7 +733,7 @@ class InvoiceController extends Controller
     }
 
     // Terbilang
-    $data->terbilang = \Helper::terbilang_rupiah($data->grand_total);
+    $data->terbilang = Helper::terbilang_rupiah($data->grand_total);
 
     $data->persen_jasa = blank($data->persen_jasa) ? 20 : $data->persen_jasa;
     $data->persen_bahan = blank($data->persen_bahan) ? 80 : $data->persen_bahan;

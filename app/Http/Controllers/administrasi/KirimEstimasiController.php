@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -16,6 +16,8 @@ use App\Models\Estimasi;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class KirimEstimasiController extends Controller
 {
   /**
@@ -24,17 +26,17 @@ class KirimEstimasiController extends Controller
    */
   public function KirimEstimasi(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? ' Estimasi';
+    $title = Helper::getTitleMenu($path) ?? ' Estimasi';
 
     $user_cabang = session('kd_cabang');
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
@@ -290,7 +292,7 @@ class KirimEstimasiController extends Controller
       ];
 
       if(blank($request->kode_pengiriman)) {
-        $penomoran = \Helper::getNomorTransaksi($user_cabang, 'KES');
+        $penomoran = Helper::getNomorTransaksi($user_cabang, 'KES');
 
         $isExist = Estimasi::where('kode_pengiriman', $penomoran)->exists();
         if ($isExist) {
@@ -317,7 +319,7 @@ class KirimEstimasiController extends Controller
 
         if(blank($request->kode_pengiriman)) {
           ## Update Nomor Kirim Estimasi
-          $res = \Helper::updateNomorTransaksi($user_cabang, 'KES', $penomoran);
+          $res = Helper::updateNomorTransaksi($user_cabang, 'KES', $penomoran);
         }
       }
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -16,6 +16,8 @@ use App\Models\HarianLepasDetail;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class HarianLepasController extends Controller
 {
   /**
@@ -23,10 +25,10 @@ class HarianLepasController extends Controller
    */
   public function HarianLepas(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -34,7 +36,7 @@ class HarianLepasController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Harian Lepas';
+    $title = Helper::getTitleMenu($path) ?? 'Harian Lepas';
 
     $user_cabang = session('kd_cabang');
 
@@ -483,7 +485,7 @@ class HarianLepasController extends Controller
 
       } else {
         // === INSERT ===
-        $noTransaksi = \Helper::getNomorTransaksi($user_cabang, 'HRL');
+        $noTransaksi = Helper::getNomorTransaksi($user_cabang, 'HRL');
 
         $cek = HarianLepas::where('kode_cabang', $user_cabang)
           ->where('no_transaksi', $noTransaksi)->first();
@@ -509,7 +511,7 @@ class HarianLepasController extends Controller
         $ok = $header;
 
         if ($ok) {
-          \Helper::updateNomorTransaksi($user_cabang, 'HRL');
+          Helper::updateNomorTransaksi($user_cabang, 'HRL');
         }
 
         $desc = $ok ? 'Berhasil Tambah Harian Lepas' : 'Gagal Tambah Harian Lepas';

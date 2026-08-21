@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\setting;
 
@@ -17,6 +17,8 @@ use App\Models\LogActivity;
 use Carbon\Carbon;
 
 
+use App\Helpers\Helpers as Helper;
+
 class BackupDBController extends Controller
 {
   /**
@@ -25,17 +27,17 @@ class BackupDBController extends Controller
    */
   public function BackupDB(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Backup DB';
+    $title = Helper::getTitleMenu($path) ?? 'Backup DB';
 
     // $disk = Storage::disk('backups');
     // $files = $disk->files();

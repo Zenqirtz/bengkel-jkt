@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -18,6 +18,8 @@ use App\Models\Karyawan;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class JadwalTurunLapController extends Controller
 {
   /**
@@ -26,17 +28,17 @@ class JadwalTurunLapController extends Controller
    */
   public function JadwalTurunLap(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? ' Estimasi';
+    $title = Helper::getTitleMenu($path) ?? ' Estimasi';
 
     $user_cabang = session('kd_cabang');
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
@@ -415,7 +417,7 @@ class JadwalTurunLapController extends Controller
       ];
 
       if (blank($request->kode_turun_lapangan)) {
-        $penomoran = \Helper::getNomorTransaksi($user_cabang, 'TL');
+        $penomoran = Helper::getNomorTransaksi($user_cabang, 'TL');
 
         $isExist = Spk::where('kode_turun_lapangan', $penomoran)->exists();
         if ($isExist) {
@@ -449,7 +451,7 @@ class JadwalTurunLapController extends Controller
 
         if (blank($request->kode_turun_lapangan)) {
           ## Update Nomor Transaksi
-          $res = \Helper::updateNomorTransaksi($user_cabang, 'TL', $penomoran);
+          $res = Helper::updateNomorTransaksi($user_cabang, 'TL', $penomoran);
         }
 
       }

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\customer_service;
 
@@ -17,6 +17,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel; // EXPORT EXCEL
 use App\Exports\LaporanSpkExport;    // EXPORT EXCEL
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanSpkController extends Controller
 {
   /**
@@ -25,22 +27,22 @@ class LaporanSpkController extends Controller
    */
   public function LaporanSPK(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'SPK';
+    $title = Helper::getTitleMenu($path) ?? 'SPK';
 
     $user_cabang = session('kd_cabang');
 
-    $months = \Helper::listMonths();
-    $years = \Helper::listYears();
+    $months = Helper::listMonths();
+    $years = Helper::listYears();
     $tipe_laporan = [
       'spk' => 'SPK Master',
       'spk_tutup' => 'SPK Tutup',
@@ -534,7 +536,7 @@ class LaporanSpkController extends Controller
       $tglAkhir = $request->input('tgl_akhir', date('d/m/Y'));
       $periodeStr = $tglAwal . ' s/d ' . $tglAkhir;
     } elseif($request->jenis_laporan == "bulan") {
-      $months = \Helper::listMonths();
+      $months = Helper::listMonths();
       $periodeStr = $months[$request->bulan] . ' ' . $request->tahun2;
     } elseif($request->jenis_laporan == "tahun") {
       $periodeStr = $request->tahun;
@@ -584,7 +586,7 @@ class LaporanSpkController extends Controller
       $tglAkhir = date('d/m/Y', strtotime($filters['tgl_akhir']));
       $periodeStr = $tglAwal . ' s/d ' . $tglAkhir;
     } elseif($filters['jenis_laporan'] == "bulan") {
-      $months = \Helper::listMonths();
+      $months = Helper::listMonths();
       $periodeStr = $months[$filters['bulan']] . ' ' . $filters['tahun2'];
     } elseif($filters['jenis_laporan'] == "tahun") {
       $periodeStr = $filters['tahun'];

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanKomisiSurveyorExport;
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanKomisiSurveyorController extends Controller
 {
   /**
@@ -18,10 +20,10 @@ class LaporanKomisiSurveyorController extends Controller
    */
   public function LaporanKomisiSurveyor(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -29,7 +31,7 @@ class LaporanKomisiSurveyorController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Komisi Surveyor';
+    $title = Helper::getTitleMenu($path) ?? 'Komisi Surveyor';
     $user_cabang = session('kd_cabang');
 
     $datafilter = session('datafilter');

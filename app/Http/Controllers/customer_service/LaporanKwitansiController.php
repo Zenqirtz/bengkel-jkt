@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\customer_service;
 
@@ -17,6 +17,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel; // EXPORT EXCEL
 use App\Exports\LaporanKwitansiExport;    // EXPORT EXCEL
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanKwitansiController extends Controller
 {
   /**
@@ -25,22 +27,22 @@ class LaporanKwitansiController extends Controller
    */
   public function LaporanKwitansi(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Kwitansi OR Lunas';
+    $title = Helper::getTitleMenu($path) ?? 'Kwitansi OR Lunas';
 
     $user_cabang = session('kd_cabang');
 
-    $months = \Helper::listMonths();
-    $years = \Helper::listYears();
+    $months = Helper::listMonths();
+    $years = Helper::listYears();
     $jenis_laporan = [
       '' => 'Pilih Jenis Laporan',
       'periode' => 'Per Periode',
@@ -315,7 +317,7 @@ class LaporanKwitansiController extends Controller
 
       $periodeStr = date("d-M-Y", strtotime($startDate)) . ' s/d ' . date("d-M-Y", strtotime($endDate));
     } elseif($request->jenis_laporan == "bulan") {
-      $months = \Helper::listMonths();
+      $months = Helper::listMonths();
       $periodeStr = $months[$request->bulan] . ' ' . $request->tahun2;
     } elseif($request->jenis_laporan == "tahun") {
       $periodeStr = $request->tahun;
@@ -333,7 +335,9 @@ class LaporanKwitansiController extends Controller
     $desc = "Export Laporan Kwitansi OR Lunas";
     LogActivity::saveLogActivity($desc, $filters);
 
-    // Masukkan $periodeStr dan $cabangData ke dalam class Export
+    // Masukkan $periodeStr dan $cabangData ke dalam use App\Helpers\Helpers as Helper;
+
+class Export
     return Excel::download(new LaporanKwitansiExport($filters, $cabangData, $periodeStr), $fileName);
   }
 

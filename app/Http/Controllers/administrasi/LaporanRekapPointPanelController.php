@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanRekapPointPanelExport;
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanRekapPointPanelController extends Controller
 {
   /**
@@ -17,10 +19,10 @@ class LaporanRekapPointPanelController extends Controller
    */
   public function LaporanRekapPointPanel(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -28,7 +30,7 @@ class LaporanRekapPointPanelController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Rekap Point Panel';
+    $title = Helper::getTitleMenu($path) ?? 'Rekap Point Panel';
     $user_cabang = session('kd_cabang');
 
     $datafilter = session('datafilter');

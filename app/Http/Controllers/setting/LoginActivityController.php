@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\setting;
 
@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class LoginActivityController extends Controller
 {
   /**
@@ -17,7 +19,7 @@ class LoginActivityController extends Controller
    */
   public function LoginActivity(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
+    $isList = Helper::AuthIsPerm("list");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -25,7 +27,7 @@ class LoginActivityController extends Controller
     }
 
     $path  = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Login Activity';
+    $title = Helper::getTitleMenu($path) ?? 'Login Activity';
 
     // Default filter hari ini
     $datafilter = [

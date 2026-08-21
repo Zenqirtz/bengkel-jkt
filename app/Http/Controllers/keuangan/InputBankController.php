@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -15,6 +15,8 @@ use App\Models\InputBank;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class InputBankController extends Controller
 {
   /**
@@ -23,10 +25,10 @@ class InputBankController extends Controller
    */
   public function InputBank(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -35,7 +37,7 @@ class InputBankController extends Controller
 
     $user_cabang = session('kd_cabang');
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Input Bank';
+    $title = Helper::getTitleMenu($path) ?? 'Input Bank';
 
     $bank = Bank::query()
       ->select('kode_bank', 'nama_bank', 'no_rekening')
@@ -342,7 +344,7 @@ class InputBankController extends Controller
 
         $desc = $ok !== false ? 'Berhasil Ubah Input Bank' : 'Gagal Ubah Input Bank';
       } else {
-        $noVoucher = \Helper::getNomorTransaksi($user_cabang, $prefix);
+        $noVoucher = Helper::getNomorTransaksi($user_cabang, $prefix);
 
         if (InputBank::where('kode_cabang', $user_cabang)->where('no_voucher', $noVoucher)->exists()) {
           DB::rollBack();
@@ -357,7 +359,7 @@ class InputBankController extends Controller
         $ok = InputBank::create($headerData);
 
         if ($ok) {
-          \Helper::updateNomorTransaksi($user_cabang, $prefix);
+          Helper::updateNomorTransaksi($user_cabang, $prefix);
           if ($noUangMuka) {
             $this->tandaiUmjDipakai($noUangMuka, $user_cabang);
           }

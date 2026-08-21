@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\setting;
 
@@ -18,6 +18,8 @@ use App\Models\UserPrivilege;
 use App\Models\CabangPrivilege;
 use App\Models\LogActivity;
 
+use App\Helpers\Helpers as Helper;
+
 class RegistrasiUser extends Controller
 {
   /**
@@ -26,17 +28,17 @@ class RegistrasiUser extends Controller
    */
   public function RegistrasiUser(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Registrasi User';
+    $title = Helper::getTitleMenu($path) ?? 'Registrasi User';
 
     $groups = Group::query()->where('active', 'Y')->orderBy('id', 'asc')->get();
     $userLevels = Parameter::query()->where('nama_tabel', 'USER_LEVEL')->orderBy('no_urut', 'asc')->get();

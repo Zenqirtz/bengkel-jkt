@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -15,6 +15,8 @@ use App\Models\UangMukaPembelian;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class UangMukaPembelianController extends Controller
 {
   /**
@@ -23,10 +25,10 @@ class UangMukaPembelianController extends Controller
    */
   public function UangMukaPembelian(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -35,7 +37,7 @@ class UangMukaPembelianController extends Controller
 
     $user_cabang = session('kd_cabang');
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Uang Muka Pembelian';
+    $title = Helper::getTitleMenu($path) ?? 'Uang Muka Pembelian';
 
     // Ambil semua bank aktif untuk dropdown Keluar Kas/Bank
     $bank = Bank::query()
@@ -264,7 +266,7 @@ class UangMukaPembelianController extends Controller
         $desc = $ok ? 'Berhasil Ubah Uang Muka Pembelian' : 'Gagal Ubah Uang Muka Pembelian';
       } else {
         // === INSERT ===
-        $noTransaksi = \Helper::getNomorTransaksi($user_cabang, 'UMB');
+        $noTransaksi = Helper::getNomorTransaksi($user_cabang, 'UMB');
 
         $cek = UangMukaPembelian::where('kode_cabang', $user_cabang)
           ->where('no_transaksi', $noTransaksi)->first();
@@ -287,7 +289,7 @@ class UangMukaPembelianController extends Controller
         $ok = UangMukaPembelian::create($data);
 
         if ($ok) {
-          \Helper::updateNomorTransaksi($user_cabang, 'UMB');
+          Helper::updateNomorTransaksi($user_cabang, 'UMB');
         }
 
         $desc = $ok ? 'Berhasil Tambah Uang Muka Pembelian' : 'Gagal Tambah Uang Muka Pembelian';

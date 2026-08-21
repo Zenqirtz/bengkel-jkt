@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -15,6 +15,8 @@ use App\Models\Bank;
 use App\Models\LogActivity;
 
 
+use App\Helpers\Helpers as Helper;
+
 class RekeningController extends Controller
 {
   /**
@@ -23,17 +25,17 @@ class RekeningController extends Controller
    */
   public function Rekening(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Data Rekening';
+    $title = Helper::getTitleMenu($path) ?? 'Data Rekening';
 
     $bank = Bank::query()->select('kode_bank', 'nama_bank')->where('is_active', 'Y')->orderBy('nama_bank', 'asc')->get();
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanRincianEstimasiExport;
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanRincianEstimasiController extends Controller
 {
   /**
@@ -18,10 +20,10 @@ class LaporanRincianEstimasiController extends Controller
    */
   public function LaporanRincianEstimasi(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -29,7 +31,7 @@ class LaporanRincianEstimasiController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Rincian Estimasi';
+    $title = Helper::getTitleMenu($path) ?? 'Rincian Estimasi';
 
     $user_cabang = session('kd_cabang');
 

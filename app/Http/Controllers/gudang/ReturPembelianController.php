@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\gudang;
 
@@ -25,6 +25,8 @@ use App\Models\LogActivity;
 use Carbon\Carbon;
 use App\Models\Notifikasi;
 
+use App\Helpers\Helpers as Helper;
+
 class ReturPembelianController extends Controller
 {
   /**
@@ -33,17 +35,17 @@ class ReturPembelianController extends Controller
    */
   public function ReturPembelian(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Retur Pembelian';
+    $title = Helper::getTitleMenu($path) ?? 'Retur Pembelian';
 
     $user_cabang = session('kd_cabang');
     $tipe_barang = Parameter::query()->where('nama_tabel', 'TIPE_BARANG')->orderBy('no_urut', 'asc')->get();
@@ -837,7 +839,7 @@ class ReturPembelianController extends Controller
       $dtInput = InputPembelian::where('kode_input', $request->kode_input)->first();
 
       ## Nomor Retur Pembelian
-      $penomoran = \Helper::getNomorTransaksi($user_cabang, 'RT');
+      $penomoran = Helper::getNomorTransaksi($user_cabang, 'RT');
 
       $cekspk = ReturPembelian::where('no_retur', $penomoran)->first();
       if (!empty($cekspk)) {
@@ -886,7 +888,7 @@ class ReturPembelianController extends Controller
         }
 
         ## Update Nomor Retur Pembelian
-        $res = \Helper::updateNomorTransaksi($user_cabang, 'RT');
+        $res = Helper::updateNomorTransaksi($user_cabang, 'RT');
       }
 
       // ## Notifikasi ke Manager & Supervisor kalau ada Retur baru menunggu approval

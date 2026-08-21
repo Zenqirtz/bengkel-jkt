@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -17,6 +17,8 @@ use App\Models\LogActivity;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image; // PENTING: Import Facade Intervention Image
 
+use App\Helpers\Helpers as Helper;
+
 class FotoPekerjaanController extends Controller
 {
   /**
@@ -25,10 +27,10 @@ class FotoPekerjaanController extends Controller
    */
   public function FotoPekerjaan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
@@ -36,7 +38,7 @@ class FotoPekerjaanController extends Controller
 
     $user_cabang = session('kd_cabang');
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Upload Foto Pekerjaan';
+    $title = Helper::getTitleMenu($path) ?? 'Upload Foto Pekerjaan';
 
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
     $status = Parameter::query()->where('nama_tabel', 'STATUS_SPK_KET')->orderBy('no_urut', 'asc')->get();

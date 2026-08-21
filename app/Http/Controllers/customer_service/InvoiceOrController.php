@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\customer_service;
 
@@ -19,6 +19,8 @@ use App\Models\Asuransi;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class InvoiceOrController extends Controller
 {
   /**
@@ -27,17 +29,17 @@ class InvoiceOrController extends Controller
    */
   public function InvoiceOr(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Invoice OR';
+    $title = Helper::getTitleMenu($path) ?? 'Invoice OR';
 
     $user_cabang = session('kd_cabang');
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
@@ -297,7 +299,7 @@ class InvoiceOrController extends Controller
       ];
 
       if(blank($no_invoice_old)) {
-        $nomor = \Helper::getNomorTransaksi($spk->kode_cabang, 'OR');
+        $nomor = Helper::getNomorTransaksi($spk->kode_cabang, 'OR');
         $data['no_invoice'] = $nomor;
       }
 
@@ -306,7 +308,7 @@ class InvoiceOrController extends Controller
       if($ok) {
         if(blank($no_invoice_old)) {
           ## Update Nomor Invoice
-          $res = \Helper::updateNomorTransaksi($spk->kode_cabang, 'OR', $nomor);
+          $res = Helper::updateNomorTransaksi($spk->kode_cabang, 'OR', $nomor);
         }
       }
 
@@ -373,7 +375,7 @@ class InvoiceOrController extends Controller
     $data->is_free = ($data->free > 0) ? "01" : "02";
 
     // if(blank($data->no_invoice)) {
-    //   $nomor = \Helper::getNomorTransaksi($data->kode_cabang, 'OR');
+    //   $nomor = Helper::getNomorTransaksi($data->kode_cabang, 'OR');
     //   $data->no_invoice = $nomor;
     // }
 
@@ -428,7 +430,7 @@ class InvoiceOrController extends Controller
     $logo_cabang = $dest.DIRECTORY_SEPARATOR.$cabang->logo_cabang;
     $file_logo = (is_file($logo_cabang)) ? "1" : "0";
 
-    $data->terbilang = \Helper::terbilang_rupiah($data->total_or);
+    $data->terbilang = Helper::terbilang_rupiah($data->total_or);
 
     $pageConfigs = ['myLayout' => 'blank'];
     return view('content.customer-service.invoice-or-print', [

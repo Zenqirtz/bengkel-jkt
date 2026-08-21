@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\gudang;
 
@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanPembelianCatExport;
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanPembelianCatController extends Controller
 {
   /**
@@ -18,10 +20,10 @@ class LaporanPembelianCatController extends Controller
    */
   public function LaporanPembelianCat(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -29,7 +31,7 @@ class LaporanPembelianCatController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Laporan Pembelian Cat';
+    $title = Helper::getTitleMenu($path) ?? 'Laporan Pembelian Cat';
     $user_cabang = session('kd_cabang');
 
     $datafilter = session('datafilter_cat');

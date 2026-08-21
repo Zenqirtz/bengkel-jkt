@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -15,6 +15,8 @@ use App\Models\UangMukaPenjualan;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class UangMukaPenjualanController extends Controller
 {
   /**
@@ -23,10 +25,10 @@ class UangMukaPenjualanController extends Controller
    */
   public function UangMukaPenjualan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -35,7 +37,7 @@ class UangMukaPenjualanController extends Controller
 
     $user_cabang = session('kd_cabang');
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Uang Muka Penjualan';
+    $title = Helper::getTitleMenu($path) ?? 'Uang Muka Penjualan';
 
     // Ambil semua bank aktif (KAS + BANK) untuk dropdown Masuk Kas/Bank
     $bank = Bank::query()
@@ -269,7 +271,7 @@ class UangMukaPenjualanController extends Controller
         $desc = $ok ? 'Berhasil Ubah Uang Muka Penjualan' : 'Gagal Ubah Uang Muka Penjualan';
       } else {
         // === INSERT ===
-        $noTransaksi = \Helper::getNomorTransaksi($user_cabang, 'UMJ');
+        $noTransaksi = Helper::getNomorTransaksi($user_cabang, 'UMJ');
 
         $cek = UangMukaPenjualan::where('kode_cabang', $user_cabang)
           ->where('no_transaksi', $noTransaksi)->first();
@@ -292,7 +294,7 @@ class UangMukaPenjualanController extends Controller
         $ok = UangMukaPenjualan::create($data);
 
         if ($ok) {
-          \Helper::updateNomorTransaksi($user_cabang, 'UMJ');
+          Helper::updateNomorTransaksi($user_cabang, 'UMJ');
         }
 
         $desc = $ok ? 'Berhasil Tambah Uang Muka Penjualan' : 'Gagal Tambah Uang Muka Penjualan';
@@ -434,7 +436,7 @@ class UangMukaPenjualanController extends Controller
     $cabang = DB::table('m_cabang')->where('kode_cabang', $data->kode_cabang)->first();
     $cabang->alamat1 = sprintf("%s %s %s", $cabang->alamat1, $cabang->alamat2, $cabang->alamat3);
 
-    $data->terbilang = \Helper::terbilang_rupiah($data->nilai);
+    $data->terbilang = Helper::terbilang_rupiah($data->nilai);
 
     $data->tanggal_transaksi = blank($data->tanggal_transaksi)
       ? '' : date("d-M-Y", strtotime($data->tanggal_transaksi));

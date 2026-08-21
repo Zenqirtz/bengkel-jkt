@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -16,6 +16,8 @@ use App\Models\SalvageDetail;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class KirimSalvageController extends Controller
 {
   /**
@@ -24,17 +26,17 @@ class KirimSalvageController extends Controller
    */
   public function KirimSalvage(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? ' Kirim Salvage';
+    $title = Helper::getTitleMenu($path) ?? ' Kirim Salvage';
 
     $user_cabang = session('kd_cabang');
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
@@ -282,7 +284,7 @@ class KirimSalvageController extends Controller
         ], 200);
       }
 
-      $penomoran = \Helper::getNomorTransaksi($user_cabang, 'KRS');
+      $penomoran = Helper::getNomorTransaksi($user_cabang, 'KRS');
 
       $cekspk = Salvage::where('no_pengiriman', $penomoran)->first();
       if (!empty($cekspk)) {
@@ -301,7 +303,7 @@ class KirimSalvageController extends Controller
 
       if ($result) {
         ## Update Nomor Estimasi
-        $res = \Helper::updateNomorTransaksi($user_cabang, 'KRS', $penomoran);
+        $res = Helper::updateNomorTransaksi($user_cabang, 'KRS', $penomoran);
       }
 
       ## Log Activity

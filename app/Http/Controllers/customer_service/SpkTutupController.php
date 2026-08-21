@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\customer_service;
 
@@ -19,6 +19,8 @@ use App\Models\Asuransi;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class SpkTutupController extends Controller
 {
   /**
@@ -27,17 +29,17 @@ class SpkTutupController extends Controller
    */
   public function SPK(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'SPK Tutup';
+    $title = Helper::getTitleMenu($path) ?? 'SPK Tutup';
 
     $user_cabang = session('kd_cabang');
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
@@ -297,7 +299,7 @@ class SpkTutupController extends Controller
       if($ok) {
         if(blank($kode_tutup_old)) {
           ## Update Nomor Invoice
-          $res = \Helper::updateNomorTransaksi($user_cabang, 'TTP', $spk->kode_tutup);
+          $res = Helper::updateNomorTransaksi($user_cabang, 'TTP', $spk->kode_tutup);
         }
       }
 
@@ -385,7 +387,7 @@ class SpkTutupController extends Controller
     $data->tgl_turun_lapangan = blank($data->tgl_turun_lapangan) ? '' : date("d/m/Y", strtotime($data->tgl_turun_lapangan));
 
     if(blank($data->kode_tutup)) {
-      $nomor = \Helper::getNomorTransaksi($data->kode_cabang, 'TTP');
+      $nomor = Helper::getNomorTransaksi($data->kode_cabang, 'TTP');
       $data->kode_tutup = $nomor;
     }
 

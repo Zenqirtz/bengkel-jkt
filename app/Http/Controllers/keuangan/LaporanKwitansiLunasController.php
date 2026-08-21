@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -17,6 +17,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel; // EXPORT EXCEL
 use App\Exports\LaporanKwitansiLunasExport;    // EXPORT EXCEL
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanKwitansiLunasController extends Controller
 {
   /**
@@ -25,17 +27,17 @@ class LaporanKwitansiLunasController extends Controller
    */
   public function LaporanKwitansiLunas(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Kwitansi Lunas';
+    $title = Helper::getTitleMenu($path) ?? 'Kwitansi Lunas';
 
     $user_cabang = session('kd_cabang');
 
@@ -824,7 +826,9 @@ class LaporanKwitansiLunasController extends Controller
     $desc = "Export Laporan Kwitansi Lunas";
     LogActivity::saveLogActivity($desc, $filters);
 
-    // Masukkan $periodeStr dan $cabangData ke dalam class Export
+    // Masukkan $periodeStr dan $cabangData ke dalam use App\Helpers\Helpers as Helper;
+
+class Export
     return Excel::download(new LaporanKwitansiLunasExport($filters, $cabangData, $periodeStr), $fileName);
   }
 

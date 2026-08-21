@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\customer_service;
 
@@ -19,6 +19,8 @@ use App\Models\Asuransi;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class SpkKeluarController extends Controller
 {
   /**
@@ -27,17 +29,17 @@ class SpkKeluarController extends Controller
    */
   public function SPK(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'SPK Keluar';
+    $title = Helper::getTitleMenu($path) ?? 'SPK Keluar';
 
     $user_cabang = session('kd_cabang');
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
@@ -302,7 +304,7 @@ class SpkKeluarController extends Controller
       if($ok) {
         if(blank($kode_keluar_old)) {
           ## Update Nomor Invoice
-          $res = \Helper::updateNomorTransaksi($user_cabang, 'OUT', $request->kode_keluar);
+          $res = Helper::updateNomorTransaksi($user_cabang, 'OUT', $request->kode_keluar);
         }
       }
 
@@ -390,7 +392,7 @@ class SpkKeluarController extends Controller
     $data->tgl_terima = blank($data->tgl_terima) ? '' : date("d/m/Y", strtotime($data->tgl_terima));
 
     if(blank($data->kode_keluar)) {
-      $nomor = \Helper::getNomorTransaksi($data->kode_cabang, 'OUT');
+      $nomor = Helper::getNomorTransaksi($data->kode_cabang, 'OUT');
       $data->kode_keluar = $nomor;
     }
     

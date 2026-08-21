@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\customer_service;
 
@@ -16,6 +16,8 @@ use App\Models\Pelanggan;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class TandaTerimaInvoiceOrController extends Controller
 {
   /**
@@ -24,17 +26,17 @@ class TandaTerimaInvoiceOrController extends Controller
    */
   public function TandaTerimaInvoiceOr(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Tanda Terima Invoice OR';
+    $title = Helper::getTitleMenu($path) ?? 'Tanda Terima Invoice OR';
 
     $user_cabang = session('kd_cabang');
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
@@ -312,7 +314,7 @@ class TandaTerimaInvoiceOrController extends Controller
     // $data->total_or = number_format($data->total_or, 2, ".", ",");
 
     // if(blank($data->no_invoice)) {
-    //   $nomor = \Helper::getNomorTransaksi($data->kode_cabang, 'OR');
+    //   $nomor = Helper::getNomorTransaksi($data->kode_cabang, 'OR');
     //   $data->no_invoice = $nomor;
     // }
 
@@ -369,7 +371,7 @@ class TandaTerimaInvoiceOrController extends Controller
   //   $logo_cabang = $dest.DIRECTORY_SEPARATOR.$cabang->logo_cabang;
   //   $file_logo = (is_file($logo_cabang)) ? "1" : "0";
 
-  //   $data->terbilang = \Helper::terbilang_rupiah($data->total_or);
+  //   $data->terbilang = Helper::terbilang_rupiah($data->total_or);
 
   //   $data->total_or = number_format($data->total_or, 0, '.', ',');
 
@@ -419,7 +421,7 @@ class TandaTerimaInvoiceOrController extends Controller
         'pelanggan' => $group->first(),
         'items' => $group,
         'grand_total' => $grandTotal,
-        'terbilang' => \Helper::terbilang_rupiah($grandTotal),
+        'terbilang' => Helper::terbilang_rupiah($grandTotal),
       ];
     });
 

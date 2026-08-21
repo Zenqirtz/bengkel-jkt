@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\gudang;
 
@@ -16,6 +16,8 @@ use App\Models\SaldoSparepart;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class TutupBukuController extends Controller
 {
   /**
@@ -24,22 +26,22 @@ class TutupBukuController extends Controller
    */
   public function TutupBuku(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Tutup Buku';
+    $title = Helper::getTitleMenu($path) ?? 'Tutup Buku';
 
     $user_cabang = session('kd_cabang');
 
-    $months = \Helper::listMonths();
-    $years = \Helper::listYears();
+    $months = Helper::listMonths();
+    $years = Helper::listYears();
     $tipe_barang = Parameter::query()->where('nama_tabel', 'TIPE_BARANG')->orderBy('no_urut', 'asc')->get();
 
     return view('content.gudang.tutup-buku', [
@@ -65,7 +67,7 @@ class TutupBukuController extends Controller
     $user_cabang = session('kd_cabang');
 
     if($request->tipe == "total-data") {
-      $months = \Helper::listMonths();
+      $months = Helper::listMonths();
 
       ## Jumlah Saldo Bahan
       $saldo_bahan = SaldoBahan::select('bulan', 'tahun', DB::raw('COUNT(1) AS total'))

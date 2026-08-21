@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanInputKasExport;
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanInputKasController extends Controller
 {
   /**
@@ -18,10 +20,10 @@ class LaporanInputKasController extends Controller
    */
   public function LaporanInputKas(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -29,7 +31,7 @@ class LaporanInputKasController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Laporan Input Kas';
+    $title = Helper::getTitleMenu($path) ?? 'Laporan Input Kas';
     $user_cabang = session('kd_cabang');
 
     $datafilter = session('datafilter_input_kas');

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -14,6 +14,8 @@ use App\Models\InputMemorial;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class InputMemorialController extends Controller
 {
   /**
@@ -21,10 +23,10 @@ class InputMemorialController extends Controller
    */
   public function InputMemorial(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -32,7 +34,7 @@ class InputMemorialController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Input Memorial';
+    $title = Helper::getTitleMenu($path) ?? 'Input Memorial';
 
     $jenis = Parameter::where('nama_tabel', 'JENIS_BANK')
       ->orderBy('no_urut')->get();
@@ -294,7 +296,7 @@ class InputMemorialController extends Controller
         $desc = $ok !== false ? 'Berhasil Ubah Input Memorial' : 'Gagal Ubah Input Memorial';
       } else {
         // INSERT
-        $noVoucher = \Helper::getNomorTransaksi($user_cabang, 'JM');
+        $noVoucher = Helper::getNomorTransaksi($user_cabang, 'JM');
 
         if (InputMemorial::where('kode_cabang', $user_cabang)->where('no_voucher', $noVoucher)->exists()) {
           DB::rollBack();
@@ -308,7 +310,7 @@ class InputMemorialController extends Controller
 
         $ok = InputMemorial::create($headerData);
         if ($ok)
-          \Helper::updateNomorTransaksi($user_cabang, 'JM');
+          Helper::updateNomorTransaksi($user_cabang, 'JM');
 
         $desc = $ok ? 'Berhasil Tambah Input Memorial' : 'Gagal Tambah Input Memorial';
       }

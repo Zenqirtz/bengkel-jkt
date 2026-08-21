@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -13,6 +13,8 @@ use App\Exports\LaporanUnitRawatJalanExport;
 use App\Models\Parameter;
 use App\Models\LogActivity;
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanUnitRawatJalanController extends Controller
 {
   /**
@@ -20,10 +22,10 @@ class LaporanUnitRawatJalanController extends Controller
    */
   public function LaporanUnitRawatJalan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -31,7 +33,7 @@ class LaporanUnitRawatJalanController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Laporan Unit Rawat Jalan';
+    $title = Helper::getTitleMenu($path) ?? 'Laporan Unit Rawat Jalan';
 
     $user_cabang = session('kd_cabang');
 

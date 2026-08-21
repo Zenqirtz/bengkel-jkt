@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\gudang;
 
@@ -14,6 +14,8 @@ use App\Models\Cat;
 use App\Models\Bahan;
 use App\Models\LogActivity;
 
+use App\Helpers\Helpers as Helper;
+
 class CatController extends Controller
 {
   /**
@@ -22,17 +24,17 @@ class CatController extends Controller
    */
   public function Cat(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Data Cat';
+    $title = Helper::getTitleMenu($path) ?? 'Data Cat';
 
     $user_cabang = session('kd_cabang');
 

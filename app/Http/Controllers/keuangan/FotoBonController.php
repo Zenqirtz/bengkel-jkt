@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -16,6 +16,8 @@ use App\Models\LogActivity;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 
+use App\Helpers\Helpers as Helper;
+
 class FotoBonController extends Controller
 {
   /**
@@ -23,10 +25,10 @@ class FotoBonController extends Controller
    */
   public function FotoBon(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -35,7 +37,7 @@ class FotoBonController extends Controller
 
     $user_cabang = session('kd_cabang');
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Upload Foto Bon';
+    $title = Helper::getTitleMenu($path) ?? 'Upload Foto Bon';
 
     $tipe_barang = Parameter::query()
       ->where('nama_tabel', 'TIPE_BARANG')

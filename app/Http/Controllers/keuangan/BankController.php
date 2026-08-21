@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -16,6 +16,8 @@ use App\Models\Parameter;
 use App\Models\LogActivity;
 
 
+use App\Helpers\Helpers as Helper;
+
 class BankController extends Controller
 {
   /**
@@ -24,17 +26,17 @@ class BankController extends Controller
    */
   public function Bank(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Data Bank';
+    $title = Helper::getTitleMenu($path) ?? 'Data Bank';
 
     $status_aktif = Parameter::query()->where('nama_tabel', 'STATUS')->orderBy('no_urut', 'asc')->get();
     $kategori = Parameter::query()->where('nama_tabel', 'KATEGORI_REKENING')->orderBy('no_urut', 'asc')->get();

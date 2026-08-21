@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -16,6 +16,8 @@ use App\Models\SalvageDetail;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class SalvageController extends Controller
 {
   /**
@@ -24,17 +26,17 @@ class SalvageController extends Controller
    */
   public function Salvage(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? ' Salvage';
+    $title = Helper::getTitleMenu($path) ?? ' Salvage';
 
     $user_cabang = session('kd_cabang');
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
@@ -413,7 +415,7 @@ class SalvageController extends Controller
         'message' => $desc
       ]);
     } else {
-      $penomoran = \Helper::getNomorTransaksi($user_cabang, 'SVG');
+      $penomoran = Helper::getNomorTransaksi($user_cabang, 'SVG');
 
       $cekspk = Salvage::where('no_salvage', $penomoran)->first();
       if (!empty($cekspk)) {
@@ -455,7 +457,7 @@ class SalvageController extends Controller
         }
 
         ## Update Nomor Estimasi
-        $res = \Helper::updateNomorTransaksi($user_cabang, 'SVG', $penomoran);
+        $res = Helper::updateNomorTransaksi($user_cabang, 'SVG', $penomoran);
       }
 
       ## Log Activity

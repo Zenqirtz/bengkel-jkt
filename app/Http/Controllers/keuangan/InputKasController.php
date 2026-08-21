@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -14,6 +14,8 @@ use App\Models\KasKecil;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class InputKasController extends Controller
 {
   /**
@@ -22,10 +24,10 @@ class InputKasController extends Controller
    */
   public function InputKas(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -33,7 +35,7 @@ class InputKasController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Input Kas';
+    $title = Helper::getTitleMenu($path) ?? 'Input Kas';
 
     // Parameter jenis (PENERIMAAN / PENGELUARAN) — sama set dengan Input Bank
     $jenis = Parameter::query()
@@ -320,7 +322,7 @@ class InputKasController extends Controller
         $desc = $ok !== false ? 'Berhasil Ubah Input Kas' : 'Gagal Ubah Input Kas';
       } else {
         // ── INSERT ──────────────────────────────────────────
-        $noVoucher = \Helper::getNomorTransaksi($user_cabang, $prefix);
+        $noVoucher = Helper::getNomorTransaksi($user_cabang, $prefix);
 
         if (KasKecil::where('kode_cabang', $user_cabang)->where('no_voucher', $noVoucher)->exists()) {
           DB::rollBack();
@@ -335,7 +337,7 @@ class InputKasController extends Controller
         $ok = KasKecil::create($headerData);
 
         if ($ok) {
-          \Helper::updateNomorTransaksi($user_cabang, $prefix);
+          Helper::updateNomorTransaksi($user_cabang, $prefix);
           if ($noUangMuka) {
             $this->tandaiUmjDipakai($noUangMuka, $user_cabang);
           }

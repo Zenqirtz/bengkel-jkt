@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\keuangan;
 
@@ -16,6 +16,8 @@ use App\Models\PembayaranGabunganDetail;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class PembayaranGabunganController extends Controller
 {
   /**
@@ -24,10 +26,10 @@ class PembayaranGabunganController extends Controller
    */
   public function PembayaranGabungan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -35,7 +37,7 @@ class PembayaranGabunganController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Pembayaran Gabungan';
+    $title = Helper::getTitleMenu($path) ?? 'Pembayaran Gabungan';
 
     $bank = Bank::query()
       ->select('kode_bank', 'nama_bank', 'no_rekening')
@@ -407,7 +409,7 @@ class PembayaranGabunganController extends Controller
 
       } else {
         // === INSERT ===
-        $noTransaksi = \Helper::getNomorTransaksi($user_cabang, 'LSR');
+        $noTransaksi = Helper::getNomorTransaksi($user_cabang, 'LSR');
 
         $cek = PembayaranGabungan::where('kode_cabang', $user_cabang)
           ->where('no_transaksi', $noTransaksi)->first();
@@ -433,7 +435,7 @@ class PembayaranGabunganController extends Controller
         $ok = $header;
 
         if ($ok) {
-          \Helper::updateNomorTransaksi($user_cabang, 'LSR');
+          Helper::updateNomorTransaksi($user_cabang, 'LSR');
         }
 
         $desc = $ok ? 'Berhasil Tambah Pembayaran Gabungan' : 'Gagal Tambah Pembayaran Gabungan';

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\customer_service;
 
@@ -16,6 +16,8 @@ use App\Models\Parameter;
 use App\Models\LogActivity;
 // use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class PemilikController extends Controller
 {
   /**
@@ -24,17 +26,17 @@ class PemilikController extends Controller
    */
   public function Pemilik(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Pemilik';
+    $title = Helper::getTitleMenu($path) ?? 'Pemilik';
 
     $user_cabang = session('kd_cabang');
     $jenis_pemilik = Parameter::query()->where('nama_tabel', 'JENIS_PEMILIK')->orderBy('no_urut', 'asc')->get();

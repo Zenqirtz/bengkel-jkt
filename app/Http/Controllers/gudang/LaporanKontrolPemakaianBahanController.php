@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\gudang;
 
@@ -12,6 +12,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanKontrolPemakaianBahanExport;
 use App\Models\LogActivity;
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanKontrolPemakaianBahanController extends Controller
 {
   /**
@@ -19,10 +21,10 @@ class LaporanKontrolPemakaianBahanController extends Controller
    */
   public function LaporanKontrolPemakaianBahan(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -30,7 +32,7 @@ class LaporanKontrolPemakaianBahanController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Laporan Kontrol Pemakaian Bahan';
+    $title = Helper::getTitleMenu($path) ?? 'Laporan Kontrol Pemakaian Bahan';
     $user_cabang = session('kd_cabang');
 
     $datafilter = session('datafilter_kontrol_pemakaian_bahan');

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -21,6 +21,8 @@ use App\Models\Pelanggan;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class TandaTerimaInvoiceController extends Controller
 {
   /**
@@ -29,17 +31,17 @@ class TandaTerimaInvoiceController extends Controller
    */
   public function TandaTerimaInvoice(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Tanda Terima Invoice OR';
+    $title = Helper::getTitleMenu($path) ?? 'Tanda Terima Invoice OR';
 
     $user_cabang = session('kd_cabang');
     $status_spk = Parameter::query()->where('nama_tabel', 'STATUS_SPK')->orderBy('no_urut', 'asc')->get();
@@ -375,7 +377,7 @@ class TandaTerimaInvoiceController extends Controller
   //   $logo_cabang = $dest.DIRECTORY_SEPARATOR.$cabang->logo_cabang;
   //   $file_logo = (is_file($logo_cabang)) ? "1" : "0";
 
-  //   $data->terbilang = \Helper::terbilang_rupiah($data->grand_total);
+  //   $data->terbilang = Helper::terbilang_rupiah($data->grand_total);
 
   //   $data->grand_total = number_format($data->grand_total, 0, '.', ',');
 
@@ -422,7 +424,7 @@ class TandaTerimaInvoiceController extends Controller
         'pelanggan' => $group->first(),
         'items' => $group,
         'grand_total' => $grandTotal,
-        'terbilang' => \Helper::terbilang_rupiah($grandTotal),
+        'terbilang' => Helper::terbilang_rupiah($grandTotal),
       ];
     });
 

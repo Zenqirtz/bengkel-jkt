@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanInsentifKwitansiExport;
 
+use App\Helpers\Helpers as Helper;
+
 class LaporanInsentifKwitansiController extends Controller
 {
   /**
@@ -18,10 +20,10 @@ class LaporanInsentifKwitansiController extends Controller
    */
   public function LaporanInsentifKwitansi(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -29,7 +31,7 @@ class LaporanInsentifKwitansiController extends Controller
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Insentif Kwitansi';
+    $title = Helper::getTitleMenu($path) ?? 'Insentif Kwitansi';
 
     $user_cabang = session('kd_cabang');
 

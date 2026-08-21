@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\administrasi;
 
@@ -28,6 +28,8 @@ use App\Models\TarifPpn;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class KonsepEstimasiController extends Controller
 {
   /**
@@ -36,17 +38,17 @@ class KonsepEstimasiController extends Controller
    */
   public function KonsepEstimasi(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
-    $isEdit = \Helper::AuthIsPerm("edit");
-    $isDel = \Helper::AuthIsPerm("delete");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
+    $isEdit = Helper::AuthIsPerm("edit");
+    $isDel = Helper::AuthIsPerm("delete");
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Konsep Estimasi';
+    $title = Helper::getTitleMenu($path) ?? 'Konsep Estimasi';
 
     $user_cabang = session('kd_cabang');
     $username = Auth::user()->username;
@@ -812,7 +814,7 @@ class KonsepEstimasiController extends Controller
         ], 200);
       }
 
-      $penomoran = \Helper::getNomorTransaksi($user_cabang, 'KE');
+      $penomoran = Helper::getNomorTransaksi($user_cabang, 'KE');
 
       $cekspk = KonsepEstimasi::where('kode_konsep_estimasi', $penomoran)->first();
       if (!empty($cekspk)) {
@@ -912,7 +914,7 @@ class KonsepEstimasiController extends Controller
         );
 
         ## Update Nomor Konsep Estimasi
-        $res = \Helper::updateNomorTransaksi($user_cabang, 'KE', $penomoran);
+        $res = Helper::updateNomorTransaksi($user_cabang, 'KE', $penomoran);
       }
 
       ## Log Activity
@@ -1037,7 +1039,7 @@ class KonsepEstimasiController extends Controller
     $logo_cabang = $dest . DIRECTORY_SEPARATOR . $cabang->logo_cabang;
     $file_logo = (is_file($logo_cabang)) ? "1" : "0";
 
-    // $data->terbilang = \Helper::terbilang_rupiah($data->total_or);
+    // $data->terbilang = Helper::terbilang_rupiah($data->total_or);
 
     ## DATA DETAIL PERBAIKAN
     $data_perbaikan = DB::table('t_konsep_estimasi_dtl1 as a')

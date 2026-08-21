@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\setting;
 
@@ -15,6 +15,8 @@ use App\Models\User;
 use App\Models\LogActivity;
 // use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class UserPrivilegeController extends Controller
 {
   /**
@@ -23,15 +25,15 @@ class UserPrivilegeController extends Controller
    */
   public function UserPrivilege(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
-    $isAdd = \Helper::AuthIsPerm("add");
+    $isList = Helper::AuthIsPerm("list");
+    $isAdd = Helper::AuthIsPerm("add");
     if(!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-authorized', ['pageConfigs' => $pageConfigs]);
     }
 
     $path = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'User Privilege';
+    $title = Helper::getTitleMenu($path) ?? 'User Privilege';
 
     $userId = session('idUser');
 

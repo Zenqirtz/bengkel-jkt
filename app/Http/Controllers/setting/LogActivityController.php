@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers\setting;
 
@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
+use App\Helpers\Helpers as Helper;
+
 class LogActivityController extends Controller
 {
   /**
@@ -17,7 +19,7 @@ class LogActivityController extends Controller
    */
   public function LogActivity(): View
   {
-    $isList = \Helper::AuthIsPerm("list");
+    $isList = Helper::AuthIsPerm("list");
 
     if (!$isList) {
       $pageConfigs = ['myLayout' => 'blank'];
@@ -25,7 +27,7 @@ class LogActivityController extends Controller
     }
 
     $path  = request()->path();
-    $title = \Helper::getTitleMenu($path) ?? 'Log Activity';
+    $title = Helper::getTitleMenu($path) ?? 'Log Activity';
 
     // Default filter hari ini — hanya untuk nilai awal input di view
     $datafilter = [
