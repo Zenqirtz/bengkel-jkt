@@ -68,13 +68,13 @@ class TerimaDokumenKlaimController extends Controller
 
     if ($request->tipe == "spk-dokumen") {
       $dtSPK = DB::table('t_spk_master as a')
-        ->join('t_estimasi_hdr as b', function ($join) {
+        ->leftJoin('t_estimasi_hdr as b', function ($join) {
           $join->on('b.kode_cabang', '=', 'a.kode_cabang')
-            ->on('b.kode_spk', '=', 'a.kode_spk'); // syarat di JOIN
+            ->on('b.kode_spk', '=', 'a.kode_spk');
         })
-        ->join('m_mobil as c', function ($join) {
+        ->leftJoin('m_mobil as c', function ($join) {
           $join->on('c.kode_cabang', '=', 'a.kode_cabang')
-            ->on('c.no_polisi', '=', 'a.no_polisi'); // syarat di JOIN
+            ->on('c.no_polisi', '=', 'a.no_polisi');
         })
         ->where('a.kode_cabang', $request->kode_cabang)
         ->where('a.kode_spk', $request->kode_spk)
@@ -86,6 +86,16 @@ class TerimaDokumenKlaimController extends Controller
         ])
         ->first();
 
+      // Guard: if SPK not found, return empty DataTables response
+      if (!$dtSPK) {
+        return response()->json([
+          'draw'            => intval($request->input('draw')),
+          'recordsTotal'    => 0,
+          'recordsFiltered' => 0,
+          'data'            => [],
+        ]);
+      }
+
       $columns = [
         1 => 'a.id',
         2 => 'c.jenis_pekerjaan',
@@ -95,8 +105,8 @@ class TerimaDokumenKlaimController extends Controller
 
       $limit = (int) $request->input('length', 10);
       $start = (int) $request->input('start', 0);
-      $order = 'a.doc_seq_no'; //$columns[$request->input('order.0.column')] ?? 'a.doc_seq_no';
-      $dir   = 'asc'; //$request->input('order.0.dir', 'asc') === 'asc' ? 'asc' : 'desc';
+      $order = 'a.doc_seq_no';
+      $dir   = 'asc';
 
       // Base query + LEFT JOIN
       $base = DB::table('t_dokumen_checklist as a')
@@ -135,8 +145,6 @@ class TerimaDokumenKlaimController extends Controller
             DB::raw("'N' as checklist"),
           ])
           ->orderBy($order, $dir)
-          // ->offset($start)
-          // ->limit($limit)
           ->get();
       } else {
         // Ambil data halaman saat ini
@@ -149,8 +157,6 @@ class TerimaDokumenKlaimController extends Controller
             'a.checklist',
           ])
           ->orderBy($order, $dir)
-          // ->offset($start)
-          // ->limit($limit)
           ->get();
       }
 
@@ -160,13 +166,13 @@ class TerimaDokumenKlaimController extends Controller
       foreach ($datas as $row) {
         if (!$isExist) {
           if ($row->doc_seq_no == '1') {
-            $row->isi_dokumen = $dtSPK->kode_estimasi;
+            $row->isi_dokumen = $dtSPK->kode_estimasi ?? '';
           } else if ($row->doc_seq_no == '2') {
-            $row->isi_dokumen = $dtSPK->no_polis;
+            $row->isi_dokumen = $dtSPK->no_polis ?? '';
           } else if ($row->doc_seq_no == '3') {
-            $row->isi_dokumen = $dtSPK->pemilik;
+            $row->isi_dokumen = $dtSPK->pemilik ?? '';
           } else if ($row->doc_seq_no == '4') {
-            $row->isi_dokumen = $dtSPK->nama_distnk;
+            $row->isi_dokumen = $dtSPK->nama_distnk ?? '';
           }
         }
 
