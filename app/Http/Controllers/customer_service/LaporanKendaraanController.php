@@ -576,7 +576,7 @@ class LaporanKendaraanController extends Controller
     ]);
   }
 
-  private function getRepMobilMasuk($param)
+  private function getRepMobilMasuk(array $param)
   {
     $user_cabang = session('kd_cabang');
 
