@@ -434,7 +434,6 @@ class LaporanKendaraanController extends Controller
 
     // Masukkan $periodeStr dan $cabangData ke dalam use App\Helpers\Helpers as Helper;
 
-class Export
     if($request->tipe_laporan == "mobil_masuk") {
       return Excel::download(new LaporanMobilMasukExport($filters, $cabangData, $periodeStr), $fileName);
     } else {
