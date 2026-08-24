@@ -1,66 +1,136 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚗 Sistem Informasi Manajemen Bengkel (Body Repair & Cat)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com)
+[![Vite](https://img.shields.io/badge/Vite-6.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
+[![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com)
 
-## About Laravel
+Aplikasi web terintegrasi berbasis **Laravel 12** yang dirancang untuk mengelola seluruh alur operasional bengkel perbaikan bodi dan pengecatan mobil (Body Repair & Paint Workshop). Sistem ini mempermudah proses mulai dari penerimaan kendaraan, estimasi biaya, monitoring pengerjaan, manajemen stok gudang, pencatatan keuangan/kasir, hingga pelaporan berkala.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📌 Fitur Utama & Modul
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. 👥 Customer Service (Front Office)
+* **Manajemen SPK (Surat Perintah Kerja)**: Input SPK masuk, SPK keluar, SPK batal, dan penutupan SPK.
+* **Manajemen Pelanggan, Pemilik, & Perantara**: Database terstruktur untuk data pemilik unit dan pihak perantara.
+* **Integrasi Asuransi**: Manajemen rekanan asuransi dan penanganan berkas klaim.
+* **Invoice & Kwitansi OR (Own Risk)**: Penerbitan dan pencatatan tanda terima invoice klaim asuransi.
+* **Laporan CS**: Laporan kendaraan masuk/keluar, outstanding OR, dan posisi perbaikan unit.
 
-## Learning Laravel
+### 2. 📋 Administrasi & Estimasi
+* **Konsep & Rincian Estimasi**: Pembuatan estimasi biaya perbaikan dan komponen penggantian suku cadang.
+* **Progress Kerja & Unit Rawat Jalan**: Monitoring status pengerjaan fisik kendaraan secara real-time.
+* **Klaim Dokumen & Salvage**: Pengelolaan dokumen klaim dan pengiriman/penerimaan suku cadang bekas (salvage).
+* **Laporan Analitik**: Laporan aging penagihan, aging penawaran, rekap point panel pengerjaan, dan insentif surveyor/marketing.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 3. 📦 Gudang & Logistik (Inventory Management)
+* **Master Barang**: Pengelolaan master data sparepart, bahan baku, dan material cat.
+* **Order & Penerimaan Barang**: Pembuatan Order Pembelian (PO), input pembelian, dan retur pembelian.
+* **Pengeluaran & Permintaan Barang**: Alokasi pemakaian bahan/sparepart per unit SPK.
+* **Stock Opname & Tutup Buku**: Penyesuaian stok fisik periodik dan kontrol pemakaian material.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 4. 💳 Keuangan & Akuntansi (Finance & Cashier)
+* **Manajemen Kas & Bank**: Input transaksi kas masuk/keluar, bank masuk/keluar, serta monitoring mutasi rekening.
+* **Pembayaran & Penerimaan Gabungan**: Transaksi pelunasan multi-invoice atau multi-SPK.
+* **Uang Muka (Down Payment)**: Pencatatan uang muka pembelian dan uang muka penjualan.
+* **Input Memorial & Jurnal**: Pencatatan jurnal memorial untuk penyesuaian akuntansi.
+* **Pelaporan Keuangan**: Laporan kwitansi lunas, laporan kas, buku besar, dan rekap voucher bank.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 5. ⚙️ Pengaturan & Keamanan (System Settings)
+* **Role & Privilege Management**: Pengaturan hak akses bertingkat per grup, per user, dan per cabang bengkel.
+* **Master Data Otomotif**: Konfigurasi jenis/merk/tipe kendaraan, panel pekerjaan, dan posisi pekerjaan.
+* **Audit & Keamanan**: Pencatatan log aktivitas user (*Audit Trail*) dan riwayat login.
+* **Backup & Profil**: Backup database berkala dan profil informasi perusahaan.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Tools & Tech Stack
 
-### Premium Partners
+### Backend & Core
+* **Language**: PHP >= 8.2
+* **Framework**: [Laravel 12](https://laravel.com)
+* **Authentication**: Laravel Jetstream
+* **Export & Report Engine**: [Laravel Excel (Maatwebsite)](https://laravel-excel.com/)
+* **Image Processing**: [Intervention Image](https://image.intervention.io/)
+* **Database**: MySQL / MariaDB
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Frontend & UI/UX
+* **Template**: Materialize Admin Template
+* **CSS Framework**: [Bootstrap 5.3](https://getbootstrap.com/)
+* **Build Tool & Bundler**: [Vite 6](https://vitejs.dev/) & Laravel Vite Plugin
+* **Preprocessor**: SASS / SCSS
+* **Icons**: Iconify & Tabler / Boxicons
 
-## Contributing
+### JavaScript Plugins & Components
+* **DataTables Suite**: Server-side & client-side datatables dengan export buttons, fixed columns, dan responsive view.
+* **Form & Input**: Select2, Flatpickr (Datepicker), Cleave.js, Tagify, Bootstrap-Select.
+* **Visualisasi & Chart**: ApexCharts & Chart.js.
+* **Komponen Interaktif**: SweetAlert2 (Pop-up/Dialog), Dropzone (File upload), FullCalendar, Notiflix / Notyf.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Environment & Development Tools
+* **Local Server**: [Laragon](https://laragon.org/) / XAMPP
+* **Package Manager**: [Composer](https://getcomposer.org/) (PHP) & [NPM](https://nodejs.org/) (JavaScript)
+* **Version Control**: Git & GitHub
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🚀 Panduan Instalasi (Local Development)
 
-## Security Vulnerabilities
+Ikuti langkah-langkah berikut untuk menjalankan proyek ini di lingkungan lokal (Localhost):
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 1. Clone Repositori
+```bash
+git clone https://github.com/Zenqirtz/bengkel-jkt.git
+cd bengkel-jkt
+```
 
-## License
+### 2. Konfigurasi Environment (`.env`)
+Salin file konfigurasi `.env.example` menjadi `.env`:
+```bash
+cp .env.example .env
+```
+Sesuaikan kredensial database pada file `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nama_database_anda
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 3. Install Dependensi PHP & JavaScript
+```bash
+# Install PHP Dependencies
+composer install
+
+# Install NPM Packages
+npm install
+```
+
+### 4. Generate Application Key & Migrasi Database
+```bash
+# Generate Key
+php artisan key:generate
+
+# Migrasi Database
+php artisan migrate
+```
+
+### 5. Jalankan Server Pengembangan
+Buka terminal dan jalankan dev server:
+```bash
+# Jalankan Vite untuk asset frontend
+npm run dev
+
+# Jalankan Local Server Laravel (di terminal terpisah)
+php artisan serve
+```
+Akses aplikasi melalui browser di: `http://127.0.0.1:8000`
+
+---
+
+## 📄 Lisensi
+Proyek ini dikembangkan untuk kebutuhan operasional bengkel perbaikan bodi mobil. Hak cipta dilindungi undang-undang.
