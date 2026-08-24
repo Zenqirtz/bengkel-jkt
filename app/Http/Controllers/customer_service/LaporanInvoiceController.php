@@ -90,6 +90,10 @@ class LaporanInvoiceController extends Controller
   {
     $user_cabang = session('kd_cabang');
 
+    $totalData = 0;
+    $totalFiltered = 0;
+    $data = [];
+
     if ($request->filled('tipe_laporan')) {
 
       if($request->tipe_laporan == "inv_belum_terbit") {
@@ -468,6 +472,7 @@ class LaporanInvoiceController extends Controller
     $filters = $request->all();
 
     // --- TAMBAHAN: Format String Periode ---
+    $periodeStr = '';
     if($request->jenis_laporan == "periode") {
       $tglAwal = $request->input('tgl_awal', date('d/m/Y'));
       $tglAkhir = $request->input('tgl_akhir', date('d/m/Y'));
@@ -480,6 +485,7 @@ class LaporanInvoiceController extends Controller
     }
     // ---------------------------------------
 
+    $fileName = '';
     if($request->tipe_laporan == "inv_belum_terbit") {
       $fileName = 'Laporan_Invoice_OR_Belum_Terbit_' . date('Ymd_His') . '.xlsx';
     } elseif($request->tipe_laporan == "inv_terbit") {
@@ -526,6 +532,7 @@ class LaporanInvoiceController extends Controller
     $filters = $request->all();
 
     // --- TAMBAHAN: Format String Periode ---
+    $periodeStr = '';
     if($filters['jenis_laporan'] == "periode") {
       $tglAwal = date('d/m/Y', strtotime($filters['tgl_awal']));
       $tglAkhir = date('d/m/Y', strtotime($filters['tgl_akhir']));
@@ -540,6 +547,7 @@ class LaporanInvoiceController extends Controller
 
     // --- DATA ---
     $datas = [];
+    $pages = '';
     if($filters['tipe_laporan'] == "inv_belum_terbit") {
       $query = DB::table('v_rpt_belum_ada_or as k')
       ->where('k.kode_cabang', $user_cabang) // Sesuaikan jika ini array/string
