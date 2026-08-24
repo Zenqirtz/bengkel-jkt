@@ -814,6 +814,7 @@ class LaporanKwitansiLunasController extends Controller
     $periodeStr = $tglAwal . ' s/d ' . $tglAkhir;
     // ---------------------------------------
 
+    $fileName = '';
     if ($request->jenis_laporan == "voucher") {
       $fileName = 'Laporan_KwitansiLunas_Voucher_' . date('Ymd_His') . '.xlsx';
     } elseif ($request->jenis_laporan == "rekap") {
@@ -849,6 +850,7 @@ class LaporanKwitansiLunasController extends Controller
 
     // --- DATA ---
     $datas = [];
+    $title = '';
     if ($filters['jenis_laporan'] == "voucher") {
       $startDate = Carbon::createFromFormat('d/m/Y', $filters['tgl_awal'])->format('Y-m-d');
       $endDate = Carbon::createFromFormat('d/m/Y', $filters['tgl_akhir'])->format('Y-m-d');
