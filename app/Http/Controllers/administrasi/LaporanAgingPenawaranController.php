@@ -361,7 +361,6 @@ class LaporanAgingPenawaranController extends Controller
 
     // Masukkan $periodeStr dan $cabangData ke dalam use App\Helpers\Helpers as Helper;
 
-class Export
     return Excel::download(new LaporanAgingPenawaranExport($filters, $cabangData, $periodeStr), $fileName);
   }
 
