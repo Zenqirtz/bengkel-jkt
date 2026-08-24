@@ -238,6 +238,13 @@ class LaporanKwitansiController extends Controller
         ]);
       }
     }
+
+    return response()->json([
+      'draw' => intval($request->input('draw')),
+      'recordsTotal' => 0,
+      'recordsFiltered' => 0,
+      'data' => [],
+    ]);
   }
 
   /**
@@ -354,6 +361,7 @@ class LaporanKwitansiController extends Controller
 
     // --- DATA ---
     $datas = [];
+    $pages = '';
     if($filters['jenis_laporan'] == "periode") {
       $startDate = Carbon::createFromFormat('d/m/Y', $filters['tgl_awal'])->format('Y-m-d');
       $endDate = Carbon::createFromFormat('d/m/Y', $filters['tgl_akhir'])->format('Y-m-d');
