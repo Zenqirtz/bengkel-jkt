@@ -510,7 +510,6 @@ class LaporanInvoiceController extends Controller
 
     // Masukkan $periodeStr dan $cabangData ke dalam use App\Helpers\Helpers as Helper;
 
-class Export
     return Excel::download(new LaporanInvoiceExport($filters, $cabangData, $periodeStr), $fileName);
   }
 
