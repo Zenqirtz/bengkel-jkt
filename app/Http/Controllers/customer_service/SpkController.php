@@ -549,9 +549,7 @@ class SpkController extends Controller
       ->groupBy('b.keterangan')
       ->get()
         ->map(function ($item) {
-            return (array) $item; // Paksa ubah object stduse App\Helpers\Helpers as Helper;
-
-Class jadi array murni
+            return (array) $item; // Paksa ubah object stdClass jadi array murni
         })
       ->toArray(); // Konversi dari Collection ke Array PHP murni
 
