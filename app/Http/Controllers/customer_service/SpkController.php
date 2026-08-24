@@ -87,7 +87,7 @@ class SpkController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -484,7 +484,7 @@ class SpkController extends Controller
    * Show the form for editing the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function edit($id): JsonResponse
   {
@@ -520,7 +520,7 @@ class SpkController extends Controller
   }
 
 
-  public function getStatusSpk($cabang)
+  public function getStatusSpk(string $cabang)
   {
     // $data = DB::table('v_spk')
     //   ->select('status', DB::raw('count(1) as jumlah'))
