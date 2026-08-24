@@ -302,7 +302,6 @@ class LaporanOutstandingController extends Controller
 
     // Masukkan $periodeStr dan $cabangData ke dalam use App\Helpers\Helpers as Helper;
 
-class Export
     return Excel::download(new LaporanOutstandingExport($filters, $cabangData, $periodeStr), $fileName);
   }
 
