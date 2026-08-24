@@ -96,6 +96,10 @@ class LaporanKendaraanController extends Controller
   {
     $user_cabang = session('kd_cabang');
 
+    $totalData = 0;
+    $totalFiltered = 0;
+    $data = [];
+
     if ($request->filled('tipe_laporan')) {
 
       if($request->tipe_laporan == "mobil_masuk") {
@@ -398,6 +402,7 @@ class LaporanKendaraanController extends Controller
     $filters = $request->all();
 
     // --- TAMBAHAN: Format String Periode ---
+    $periodeStr = '';
     if($request->jenis_laporan == "periode") {
       $tglAwal = $request->input('tgl_awal', date('d/m/Y'));
       $tglAkhir = $request->input('tgl_akhir', date('d/m/Y'));
@@ -410,6 +415,7 @@ class LaporanKendaraanController extends Controller
     }
     // ---------------------------------------
 
+    $fileName = '';
     if($request->tipe_laporan == "mobil_masuk") {
       $fileName = 'Laporan_Mobil_Masuk_' . date('Ymd_His') . '.xlsx';
     } elseif($request->tipe_laporan == "mobil_belum_turun") {
@@ -454,6 +460,7 @@ class LaporanKendaraanController extends Controller
     $filters = $request->all();
 
     // --- TAMBAHAN: Format String Periode ---
+    $periodeStr = '';
     if($filters['jenis_laporan'] == "periode") {
       $tglAwal = date('d/m/Y', strtotime($filters['tgl_awal']));
       $tglAkhir = date('d/m/Y', strtotime($filters['tgl_akhir']));
@@ -468,6 +475,7 @@ class LaporanKendaraanController extends Controller
 
     // --- DATA ---
     $datas = [];
+    $pages = '';
     if($filters['tipe_laporan'] == "mobil_masuk") {
       $datas = $this->getRepMobilMasuk($filters);
       $pages = 'content.customer-service.laporan.laporan-kendaraan-masuk-print';
