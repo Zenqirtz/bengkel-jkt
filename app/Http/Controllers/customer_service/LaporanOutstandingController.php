@@ -82,6 +82,10 @@ class LaporanOutstandingController extends Controller
   {
     $user_cabang = session('kd_cabang');
 
+    $totalData = 0;
+    $totalFiltered = 0;
+    $data = [];
+
     if ($request->filled('jenis_laporan')) {
 
       if($request->jenis_laporan == "periode") {
@@ -279,6 +283,7 @@ class LaporanOutstandingController extends Controller
     $filters = $request->all();
 
     // --- TAMBAHAN: Format String Periode ---
+    $periodeStr = '';
     if($request->jenis_laporan == "periode") {
       $tglAwal = $request->input('tgl_awal', date('d/m/Y'));
       $periodeStr = $tglAwal;
@@ -290,6 +295,7 @@ class LaporanOutstandingController extends Controller
     }
     // ---------------------------------------
 
+    $fileName = '';
     if($request->jenis_laporan == "periode") {
       $fileName = 'Laporan_Outstanding_' . date('Ymd_His') . '.xlsx';
     } elseif($request->jenis_laporan == "tahun") {
@@ -318,6 +324,7 @@ class LaporanOutstandingController extends Controller
     $filters = $request->all();
 
     // --- TAMBAHAN: Format String Periode ---
+    $periodeStr = '';
     if($filters['jenis_laporan'] == "periode") {
       $tglAwal = date('d/m/Y', strtotime($filters['tgl_awal']));
       $periodeStr = $tglAwal;
@@ -331,6 +338,7 @@ class LaporanOutstandingController extends Controller
 
     // --- DATA ---
     $datas = [];
+    $pages = '';
     if($filters['jenis_laporan'] == "periode") {
       $query = DB::table('v_rpt_outstanding_or as k')
       ->where('k.kode_cabang', $user_cabang) // Sesuaikan jika ini array/string
