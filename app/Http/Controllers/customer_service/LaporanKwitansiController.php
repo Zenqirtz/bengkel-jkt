@@ -337,7 +337,6 @@ class LaporanKwitansiController extends Controller
 
     // Masukkan $periodeStr dan $cabangData ke dalam use App\Helpers\Helpers as Helper;
 
-class Export
     return Excel::download(new LaporanKwitansiExport($filters, $cabangData, $periodeStr), $fileName);
   }
 
