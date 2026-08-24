@@ -353,6 +353,7 @@ class LaporanAgingPenagihanController extends Controller
     $periodeStr = Carbon::createFromFormat('d/m/Y', $filters['tgl_awal'])->format('d-M-Y'); //$tglAwal;
     // ---------------------------------------
 
+    $fileName = '';
     if($request->jenis_laporan == "rekap") {
       $fileName = 'Laporan_Aging_Penagihan_Rekap_' . date('Ymd') . '.xlsx';
     } elseif($request->jenis_laporan == "rinci") {
@@ -385,6 +386,7 @@ class LaporanAgingPenagihanController extends Controller
 
     // --- DATA ---
     $datas = [];
+    $title = '';
     if($filters['jenis_laporan'] == "rekap") {
       $startDate = Carbon::createFromFormat('d/m/Y', $filters['tgl_awal'])->format('Y-m-d');
 
