@@ -59,7 +59,8 @@ class PemilikController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -500,7 +501,7 @@ class PemilikController extends Controller
       }
     }
 
-    $data = Pemilik::query()->where('id', $id)->first()->toArray();
+    $data = Pemilik::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Pemilik::where('id', $id)->delete();
 
