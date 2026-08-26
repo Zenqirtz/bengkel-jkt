@@ -591,7 +591,7 @@ class KendaraanController extends Controller
    */
   public function destroy($id)
   {
-    $data = Kendaraan::query()->where('id', $id)->first()->toArray();
+    $data = Kendaraan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Kendaraan::where('id', $id)->delete();
 
@@ -686,7 +686,7 @@ class KendaraanController extends Controller
 
   public function hapusFotoSTNK($id)
   {
-    $data = DokumenFile::query()->where('id', $id)->first()->toArray();
+    $data = DokumenFile::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = DokumenFile::where('id', $id)->delete();
 
