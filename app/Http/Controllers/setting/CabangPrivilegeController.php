@@ -158,7 +158,7 @@ class CabangPrivilegeController extends Controller
       if ($aryData) {
         $datas = [];
         foreach ($aryData as $key => $value) {
-          $data = CabangPrivilege::query()->where('userid', $userid)->where('cabangid', $value)->first()->toArray();
+          $data = CabangPrivilege::query()->where('userid', $userid)->where('cabangid', $value)->first()?->toArray() ?? [];
 
           CabangPrivilege::where('userid', $userid)->where('cabangid', $value)->delete();
 
