@@ -398,7 +398,7 @@ class InputMemorialController extends Controller
   {
     $data = DB::table('t_input_memorial')->where('id', $id)->first();
 
-    if (blank($data)) {
+    if (!$data || blank($data)) {
       return response()->json(['status' => false, 'message' => 'Data tidak ditemukan.']);
     }
 
