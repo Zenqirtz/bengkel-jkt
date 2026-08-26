@@ -281,7 +281,7 @@ class MerekKendaraanController extends Controller
    */
   public function destroy($id)
   {
-    $data = MerekKendaraan::query()->where('id', $id)->first()->toArray();
+    $data = MerekKendaraan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = MerekKendaraan::where('id', $id)->delete();
 
