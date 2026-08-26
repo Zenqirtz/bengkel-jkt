@@ -324,7 +324,7 @@ class TipeKendaraanController extends Controller
    */
   public function destroy($id)
   {
-    $data = TipeKendaraan::query()->where('id', $id)->first()->toArray();
+    $data = TipeKendaraan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = TipeKendaraan::where('id', $id)->delete();
 
