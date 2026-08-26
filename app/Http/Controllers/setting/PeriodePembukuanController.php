@@ -236,7 +236,7 @@ class PeriodePembukuanController extends Controller
    */
   public function destroy($id)
   {
-    $data = PeriodePembukuan::query()->where('id', $id)->first()->toArray();
+    $data = PeriodePembukuan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = PeriodePembukuan::where('id', $id)->delete();
 
