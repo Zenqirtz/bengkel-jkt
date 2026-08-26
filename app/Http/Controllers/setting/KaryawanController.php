@@ -816,7 +816,7 @@ class KaryawanController extends Controller
     //     @unlink($photoPath);
     //   }
     // }
-    $data = Karyawan::query()->where('id', $id)->first()->toArray();
+    $data = Karyawan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Karyawan::where('id', $id)->delete();
     if($ok) {
