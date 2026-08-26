@@ -63,7 +63,8 @@ class PerantaraController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -367,7 +368,7 @@ class PerantaraController extends Controller
    */
   public function destroy($id)
   {
-    $data = Perantara::query()->where('id', $id)->first()->toArray();
+    $data = Perantara::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Perantara::where('id', $id)->delete();
 
