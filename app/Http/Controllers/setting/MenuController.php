@@ -331,7 +331,7 @@ class MenuController extends Controller
    */
   public function destroy($id)
   {
-    $data = Menu::query()->where('id', $id)->first()->toArray();
+    $data = Menu::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Menu::where('id', $id)->delete();
 
