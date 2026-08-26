@@ -243,7 +243,7 @@ class BackupDBController extends Controller
       $fileName = $result->file_backup;
       if (Storage::disk('backups')->exists($fileName)) {
         ## Log Activity
-        $data = BackupDB::query()->where('id', $id)->first()->toArray();
+        $data = BackupDB::query()->where('id', $id)->first()?->toArray() ?? [];
         $desc = 'Berhasil Download Database';
         LogActivity::saveLogActivity($desc, $data);
 
@@ -290,7 +290,7 @@ class BackupDBController extends Controller
       }
     }
 
-    $data = BackupDB::query()->where('id', $id)->first()->toArray();
+    $data = BackupDB::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = BackupDB::where('id', $id)->delete();
 
