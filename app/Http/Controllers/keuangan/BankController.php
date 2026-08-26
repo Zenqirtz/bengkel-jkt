@@ -354,7 +354,7 @@ class BankController extends Controller
    */
   public function destroy($id)
   {
-    $data = Bank::query()->select('id','kode_bank','nama_bank')->where('id', $id)->first()->toArray();
+    $data = Bank::query()->select('id','kode_bank','nama_bank')->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Bank::where('id', $id)->delete();
 
