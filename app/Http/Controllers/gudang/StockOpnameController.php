@@ -843,7 +843,7 @@ class StockOpnameController extends Controller
       ])
       ->first();
 
-      if(blank($data)) {
+      if(!$data || blank($data)) {
         $result = false;
         return response()->json([
           'status'  => (bool)$result,
@@ -902,7 +902,7 @@ class StockOpnameController extends Controller
       ])
       ->first();
 
-      if(blank($data)) {
+      if(!$data || blank($data)) {
         $result = false;
         return response()->json([
           'status'  => (bool)$result,
