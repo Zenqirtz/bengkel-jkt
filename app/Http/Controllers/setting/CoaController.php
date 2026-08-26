@@ -322,7 +322,7 @@ class CoaController extends Controller
    */
   public function destroy($id)
   {
-    $data = Coa::query()->where('id', $id)->first()->toArray();
+    $data = Coa::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Coa::where('id', $id)->delete();
 
