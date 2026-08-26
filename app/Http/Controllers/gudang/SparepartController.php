@@ -342,7 +342,7 @@ class SparepartController extends Controller
    */
   public function destroy($id)
   {
-    $data = Sparepart::query()->where('id', $id)->first()->toArray();
+    $data = Sparepart::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Sparepart::where('id', $id)->delete();
 
