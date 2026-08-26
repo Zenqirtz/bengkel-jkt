@@ -1162,7 +1162,7 @@ class PengeluaranBarangController extends Controller
    */
   public function destroy($id)
   {
-    $data = PengeluaranBarang::query()->where('id', $id)->first()->toArray();
+    $data = PengeluaranBarang::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = PengeluaranBarang::where('id', $id)->delete();
     if ($ok) {
