@@ -1037,6 +1037,7 @@ class KonsepEstimasiController extends Controller
 
   public function cetakKonsepEstimasi(Request $request)
   {
+    $title = 'Cetak Konsep Estimasi';
     $id = $request->id;
 
     $data = DB::table('v_trx_konsep_estimasi')->where('id', $id)->first();
