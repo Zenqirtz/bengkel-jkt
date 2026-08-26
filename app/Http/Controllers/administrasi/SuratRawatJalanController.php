@@ -55,7 +55,8 @@ class SuratRawatJalanController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -247,7 +248,7 @@ class SuratRawatJalanController extends Controller
    * Show the form for editing the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
 
   //Ambil detail 1 SPK untuk cetak surat rawat jalan
@@ -281,7 +282,7 @@ class SuratRawatJalanController extends Controller
       ])
       ->first();
 
-    if (blank($data)) {
+    if (!$data || blank($data)) {
       return response()->json(['status' => false, 'message' => 'Data tidak ditemukan!']);
     }
 
