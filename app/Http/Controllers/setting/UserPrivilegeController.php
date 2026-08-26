@@ -158,7 +158,7 @@ class UserPrivilegeController extends Controller
       if ($aryData) {
         $datas = [];
         foreach ($aryData as $key => $value) {
-          $data = UserPrivilege::query()->where('userid', $userid)->where('groupid', $value)->first()->toArray();
+          $data = UserPrivilege::query()->where('userid', $userid)->where('groupid', $value)->first()?->toArray() ?? [];
 
           UserPrivilege::where('userid', $userid)->where('groupid', $value)->delete();
 
