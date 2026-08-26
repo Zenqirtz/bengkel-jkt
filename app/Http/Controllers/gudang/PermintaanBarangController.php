@@ -1095,7 +1095,7 @@ class PermintaanBarangController extends Controller
    */
   public function destroy($id)
   {
-    $data = PermintaanBarang::query()->where('id', $id)->first()->toArray();
+    $data = PermintaanBarang::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = PermintaanBarang::where('id', $id)->delete();
     if ($ok) {
