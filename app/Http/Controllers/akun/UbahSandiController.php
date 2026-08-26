@@ -18,6 +18,11 @@ class UbahSandiController extends Controller
    * Redirect to view.
    *
    */
+  public function index(): View
+  {
+    return $this->UbahSandi();
+  }
+
   public function UbahSandi(): View
   {
     $title = "Ubah Sandi";
