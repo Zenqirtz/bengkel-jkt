@@ -323,7 +323,7 @@ class CatController extends Controller
    */
   public function destroy($id)
   {
-    $data = Cat::query()->where('id', $id)->first()->toArray();
+    $data = Cat::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Cat::where('id', $id)->delete();
 
