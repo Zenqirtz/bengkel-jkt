@@ -63,7 +63,10 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/jetstream",
+                "laravel/fortify"
+            ]
         }
     },
     "config": {
