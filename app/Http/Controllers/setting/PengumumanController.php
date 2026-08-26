@@ -230,7 +230,7 @@ class PengumumanController extends Controller
    */
   public function destroy($id)
   {
-    $data = Pengumuman::query()->where('id', $id)->first()->toArray();
+    $data = Pengumuman::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Pengumuman::where('id', $id)->delete();
 
