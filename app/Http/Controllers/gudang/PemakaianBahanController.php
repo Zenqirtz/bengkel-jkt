@@ -381,7 +381,7 @@ class PemakaianBahanController extends Controller
    */
   public function destroy($id)
   {
-    $data = PemakaianBahan::query()->where('id', $id)->first()->toArray();
+    $data = PemakaianBahan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = PemakaianBahan::where('id', $id)->delete();
 
