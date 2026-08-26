@@ -390,7 +390,7 @@ class BahanController extends Controller
    */
   public function destroy($id)
   {
-    $data = Bahan::query()->where('id', $id)->first()->toArray();
+    $data = Bahan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Bahan::where('id', $id)->delete();
 
