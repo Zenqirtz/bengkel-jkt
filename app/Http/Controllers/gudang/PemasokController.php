@@ -486,7 +486,7 @@ class PemasokController extends Controller
       }
     }
 
-    $data = Pemasok::query()->where('id', $id)->first()->toArray();
+    $data = Pemasok::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Pemasok::where('id', $id)->delete();
 
