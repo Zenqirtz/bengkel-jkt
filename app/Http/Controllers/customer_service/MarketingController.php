@@ -59,7 +59,8 @@ class MarketingController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -333,7 +334,7 @@ class MarketingController extends Controller
    */
   public function destroy($id)
   {
-    $data = Marketing::query()->where('id', $id)->first()->toArray();
+    $data = Marketing::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Marketing::where('id', $id)->delete();
 
