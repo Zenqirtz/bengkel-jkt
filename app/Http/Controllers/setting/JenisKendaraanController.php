@@ -282,7 +282,7 @@ class JenisKendaraanController extends Controller
    */
   public function destroy($id)
   {
-    $data = JenisKendaraan::query()->where('id', $id)->first()->toArray();
+    $data = JenisKendaraan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = JenisKendaraan::where('id', $id)->delete();
 
