@@ -429,7 +429,7 @@ class ProfilePerusahaanController extends Controller
     //   }
     // }
 
-    $data = ProfilePerusahaan::query()->where('id', $id)->first()->toArray();
+    $data = ProfilePerusahaan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = ProfilePerusahaan::where('id', $id)->delete();
     if($ok) {
