@@ -314,7 +314,7 @@ class JenisPekerjaanController extends Controller
    */
   public function destroy($id)
   {
-    $data = JenisPekerjaan::query()->where('id', $id)->first()->toArray();
+    $data = JenisPekerjaan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = JenisPekerjaan::where('id', $id)->delete();
 
