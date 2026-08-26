@@ -512,7 +512,7 @@ class RegistrasiUser extends Controller
     //   }
     // }
 
-    $data = User::query()->where('id', $id)->first()->toArray();
+    $data = User::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $users = User::where('id', $id)->delete();
     if($users) {
