@@ -307,7 +307,7 @@ class TandaTerimaInvoiceController extends Controller
   {
     $data = DB::table('v_trx_kwitansi')->where('id', $id)->first();
 
-    if (blank($data)) {
+    if (!$data || blank($data)) {
       $result = false;
       return response()->json([
         'status' => (bool) $result,
