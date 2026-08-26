@@ -552,7 +552,7 @@ class BuktiPenerimaanController extends Controller
    */
   public function destroy($id)
   {
-    $data = BuktiPenerimaan::query()->where('id', $id)->first()->toArray();
+    $data = BuktiPenerimaan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = BuktiPenerimaan::where('id', $id)->delete();
     if ($ok) {
