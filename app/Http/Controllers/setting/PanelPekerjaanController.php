@@ -330,7 +330,7 @@ class PanelPekerjaanController extends Controller
    */
   public function destroy($id)
   {
-    $data = PanelPekerjaan::query()->where('id', $id)->first()->toArray();
+    $data = PanelPekerjaan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = PanelPekerjaan::where('id', $id)->delete();
 
