@@ -1344,7 +1344,7 @@ class OrderPembelianController extends Controller
    */
   public function destroy($id)
   {
-    $data = OrderPembelian::query()->where('id', $id)->first()->toArray();
+    $data = OrderPembelian::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = OrderPembelian::where('id', $id)->delete();
     if ($ok) {
