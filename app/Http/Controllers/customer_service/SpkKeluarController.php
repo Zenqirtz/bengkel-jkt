@@ -64,7 +64,8 @@ class SpkKeluarController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -339,12 +340,20 @@ class SpkKeluarController extends Controller
    * Show the form for editing the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function edit($id): JsonResponse
   {
     // $data = Spk::findOrFail($id);
     $data = DB::table('v_spk')->where('id', $id)->first();
+
+    if (!$data || blank($data)) {
+      $result = false;
+      return response()->json([
+        'status'  => (bool)$result,
+        'message' => 'Data SPK tidak ditemukan !'
+      ]);
+    }
 
     if(blank($data->kode_konsep_estimasi)) {
       $result = false;
@@ -434,7 +443,7 @@ class SpkKeluarController extends Controller
     $id = $request->id;
     $data = DB::table('v_rep_spk_keluar')->where('id', $id)->first();
 
-    if(blank($data)) {
+    if (!$data || blank($data)) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-found', ['pageConfigs' => $pageConfigs]);
     }
@@ -442,11 +451,14 @@ class SpkKeluarController extends Controller
     $data->tgl_keluar = date("d-M-Y", strtotime($data->tgl_keluar));
 
     $cabang = DB::table('m_cabang')->where('kode_cabang', $data->kode_cabang)->first();
-    $cabang->alamat1 = sprintf("%s %s %s", $cabang->alamat1, $cabang->alamat2, $cabang->alamat3);
-
-    $dest = public_path('assets/img/cabang');
-    $logo_cabang = $dest . DIRECTORY_SEPARATOR . $cabang->logo_cabang;
-    $file_logo = (is_file($logo_cabang)) ? "1" : "0";
+    if ($cabang) {
+      $cabang->alamat1 = sprintf("%s %s %s", $cabang->alamat1 ?? '', $cabang->alamat2 ?? '', $cabang->alamat3 ?? '');
+      $dest = public_path('assets/img/cabang');
+      $logo_cabang = $dest . DIRECTORY_SEPARATOR . ($cabang->logo_cabang ?? '');
+      $file_logo = (!empty($cabang->logo_cabang) && is_file($logo_cabang)) ? "1" : "0";
+    } else {
+      $file_logo = "0";
+    }
 
     $pageConfigs = ['myLayout' => 'blank'];
     return view('content.customer-service.kendaraan-keluar-print', [
