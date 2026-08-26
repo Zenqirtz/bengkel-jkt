@@ -596,7 +596,7 @@ class HarianLepasController extends Controller
       ])
       ->first();
 
-    if (blank($data)) {
+    if (!$data || blank($data)) {
       return response()->json(['status' => false, 'message' => 'Data tidak ditemukan.']);
     }
 
