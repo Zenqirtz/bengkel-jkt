@@ -75,7 +75,8 @@ class InvoiceController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -622,14 +623,14 @@ class InvoiceController extends Controller
    * Show the form for editing the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function edit($id): JsonResponse
   {
     // $data = Spk::findOrFail($id);
     $data = DB::table('v_trx_kwitansi')->where('id', $id)->first();
 
-    if (blank($data)) {
+    if (!$data || blank($data)) {
       $result = false;
       return response()->json([
         'status' => (bool) $result,
@@ -660,34 +661,49 @@ class InvoiceController extends Controller
     $data->sifat_ppn = blank($data->sifat_ppn) ? '0' : $data->sifat_ppn;
     $data->sparepart_ppn = blank($data->sparepart_ppn) ? '0' : $data->sparepart_ppn;
     $data->lain_ppn = blank($data->lain_ppn) ? '0' : $data->lain_ppn;
-
     $data->tgl_kwitansi = blank($data->tgl_kwitansi) ? date("d/m/Y") : date("d/m/Y", strtotime($data->tgl_kwitansi));
-    $data->tgl_kirim_kwitansi = blank($data->tgl_kirim_kwitansi) ? date("d/m/Y") : date("d/m/Y", strtotime($data->tgl_kirim_kwitansi));
+    $data->tgl_persetujuan = blank($data->tgl_persetujuan) ? '' : date("d/m/Y", strtotime($data->tgl_persetujuan));
 
-    $data->total_perbaikan = blank($data->total_perbaikan) ? $data->total_perbaikan_s : $data->total_perbaikan;
-    $data->total_sparepart = blank($data->total_sparepart) ? $data->total_sparepart_s : $data->total_sparepart;
-    $data->total_lain = blank($data->total_lain) ? $data->total_lain_s : $data->total_lain;
-    $data->total = number_format($data->total_perbaikan + $data->total_sparepart + $data->total_lain, 2, '.', ',');
-    $data->grand_total = blank($data->grand_total) ? number_format($data->total_s, 2, '.', ',') : number_format($data->grand_total, 2, '.', ',');
-    $data->ppn = blank($data->ppn) ? number_format($data->ppn_s, 2, '.', ',') : number_format($data->ppn, 2, '.', ',');
-    $data->total_or_ass = blank($data->total_or_ass) ? number_format($data->total_or_ass_s, 2, '.', ',') : number_format($data->total_or_ass, 2, '.', ',');
-    $data->salvage = blank($data->salvage) ? number_format($data->salvage_s, 2, '.', ',') : number_format($data->salvage, 2, '.', ',');
-    $data->prorata = number_format($data->prorata, 2, '.', ',');
-    $data->pph = number_format($data->pph, 2, '.', ',');
-    $data->penyusutan = number_format($data->penyusutan, 2, '.', ',');
-    $data->discount = number_format($data->discount, 2, '.', ',');
-    $data->transport = number_format($data->transport, 2, '.', ',');
+    // $data->total_perbaikan = blank($data->total_perbaikan) ? $data->total_perbaikan_s : $data->total_perbaikan;
+    // $data->total_sparepart = blank($data->total_sparepart) ? $data->total_sparepart_s : $data->total_sparepart;
+    // $data->total_lain = blank($data->total_lain) ? $data->total_lain_s : $data->total_lain;
+
+    // $data->total_or_ass = blank($data->total_or_ass) ? $data->total_or_ass_s : $data->total_or_ass;
+    // $data->salvage = blank($data->salvage) ? $data->salvage_s : $data->salvage;
+    // $data->ppn = blank($data->ppn) ? $data->ppn_s : $data->ppn;
+
+    $data->total_perbaikan = number_format($data->total_perbaikan, 2, '.', ',');
     $data->total_sparepart = number_format($data->total_sparepart, 2, '.', ',');
     $data->total_lain = number_format($data->total_lain, 2, '.', ',');
-    $data->persen_jasa = blank($data->persen_jasa) ? 20 : $data->persen_jasa;
-    $data->persen_bahan = blank($data->persen_bahan) ? 80 : $data->persen_bahan;
+    $data->total = number_format($data->total, 2, '.', ',');
 
-    $data->total_bahan = number_format($data->total_perbaikan * ($data->persen_bahan / 100), 2, '.', ',');
-    $data->total_jasa = number_format($data->total_perbaikan * ($data->persen_jasa / 100), 2, '.', ',');
+    $data->total_perbaikan_s = number_format($data->total_perbaikan_s, 2, '.', ',');
+    $data->total_sparepart_s = number_format($data->total_sparepart_s, 2, '.', ',');
+    $data->total_lain_s = number_format($data->total_lain_s, 2, '.', ',');
+    $data->total_kwitansi = number_format($data->total_kwitansi, 2, '.', ',');
+
+    $data->total_or_ass_s = number_format($data->total_or_ass_s, 2, '.', ',');
+    $data->total_or_ass = number_format($data->total_or_ass, 2, '.', ',');
+    $data->salvage_s = number_format($data->salvage_s, 2, '.', ',');
+    $data->salvage = number_format($data->salvage, 2, '.', ',');
+
+    $data->ppn = number_format($data->ppn, 2, '.', ',');
+    $data->ppn_s = number_format($data->ppn_s, 2, '.', ',');
+    $data->total_s = number_format($data->total_s, 2, '.', ',');
+
+    $data->prorata = number_format($data->prorata, 2, '.', ',');
+    $data->prorata_persen = number_format($data->prorata_persen, 2, '.', ',');
+    $data->discount = number_format($data->discount, 2, '.', ',');
+    $data->discount_persen = number_format($data->discount_persen, 2, '.', ',');
+    $data->penyusutan = number_format($data->penyusutan, 2, '.', ',');
+    $data->penyusutan_persen = number_format($data->penyusutan_persen, 2, '.', ',');
+    $data->transport = number_format($data->transport, 2, '.', ',');
+    $data->pph = number_format($data->pph, 2, '.', ',');
+    $data->grand_total = number_format($data->grand_total, 2, '.', ',');
 
     return response()->json([
       'status' => (bool) $result,
-      'message' => 'Berhasil Terbit Invoice',
+      'message' => 'Berhasil Kirim Kwitansi',
       'data' => $data
     ]);
   }
@@ -722,7 +738,7 @@ class InvoiceController extends Controller
     // v_trx_kwitansi juga pakai id dari t_spk_master
     $data = DB::table('v_trx_kwitansi')->where('id', $id)->first();
 
-    if (blank($data)) {
+    if (!$data || blank($data)) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-found', ['pageConfigs' => $pageConfigs]);
     }
@@ -770,11 +786,14 @@ class InvoiceController extends Controller
     $data->grand_total = blank($data->grand_total) ? number_format($data->total_s, 0, '.', ',') : number_format($data->grand_total, 0, '.', ',');
 
     $cabang = DB::table('m_cabang')->where('kode_cabang', $data->kode_cabang)->first();
-    $cabang->alamat1 = sprintf("%s %s %s", $cabang->alamat1, $cabang->alamat2, $cabang->alamat3);
-
-    $dest = public_path('assets/img/cabang');
-    $logo_cabang = $dest . DIRECTORY_SEPARATOR . $cabang->logo_cabang;
-    $file_logo = (is_file($logo_cabang)) ? "1" : "0";
+    if ($cabang) {
+      $cabang->alamat1 = sprintf("%s %s %s", $cabang->alamat1 ?? '', $cabang->alamat2 ?? '', $cabang->alamat3 ?? '');
+      $dest = public_path('assets/img/cabang');
+      $logo_cabang = $dest . DIRECTORY_SEPARATOR . ($cabang->logo_cabang ?? '');
+      $file_logo = (!empty($cabang->logo_cabang) && is_file($logo_cabang)) ? "1" : "0";
+    } else {
+      $file_logo = "0";
+    }
 
     LogActivity::saveLogActivity("Print " . $title);
 
