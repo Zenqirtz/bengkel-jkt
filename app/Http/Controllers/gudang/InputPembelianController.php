@@ -1158,7 +1158,7 @@ class InputPembelianController extends Controller
    */
   public function destroy($id)
   {
-    $data = InputPembelian::query()->where('id', $id)->first()->toArray();
+    $data = InputPembelian::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = InputPembelian::where('id', $id)->delete();
     if ($ok) {
