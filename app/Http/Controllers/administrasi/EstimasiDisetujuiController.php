@@ -93,7 +93,8 @@ class EstimasiDisetujuiController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -586,6 +587,7 @@ class EstimasiDisetujuiController extends Controller
         'updated_by' => Auth::user()->username
       ];
 
+      $penomoran = null;
       if (blank($request->kode_persetujuan)) {
         $penomoran = Helper::getNomorTransaksi($user_cabang, 'ED');
 
@@ -649,7 +651,7 @@ class EstimasiDisetujuiController extends Controller
           ]
         );
 
-        if (blank($request->kode_persetujuan)) {
+        if (blank($request->kode_persetujuan) && $penomoran) {
           ## Update Nomor Transaksi
           $res = Helper::updateNomorTransaksi($user_cabang, 'ED', $penomoran);
         }
@@ -692,14 +694,14 @@ class EstimasiDisetujuiController extends Controller
    * Show the form for editing the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function edit($id): JsonResponse
   {
     // $data = Spk::findOrFail($id);
     $data = DB::table('v_trx_estimasi_disetujui')->where('id', $id)->first();
 
-    if (blank($data)) {
+    if (!$data || blank($data)) {
       $result = false;
       return response()->json([
         'status'  => (bool)$result,
