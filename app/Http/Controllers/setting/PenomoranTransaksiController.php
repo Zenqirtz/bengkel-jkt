@@ -382,7 +382,7 @@ class PenomoranTransaksiController extends Controller
    */
   public function destroy($id)
   {
-    $data = PenomoranTransaksi::query()->where('id', $id)->first()->toArray();
+    $data = PenomoranTransaksi::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = PenomoranTransaksi::where('id', $id)->delete();
 
