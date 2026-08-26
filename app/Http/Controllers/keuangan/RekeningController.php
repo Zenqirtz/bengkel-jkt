@@ -297,7 +297,7 @@ class RekeningController extends Controller
    */
   public function destroy($id)
   {
-    $data = Rekening::query()->select('id','kode_cabang','kode_bank','no_rekening')->where('id', $id)->first()->toArray();
+    $data = Rekening::query()->select('id','kode_cabang','kode_bank','no_rekening')->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Rekening::where('id', $id)->delete();
 
