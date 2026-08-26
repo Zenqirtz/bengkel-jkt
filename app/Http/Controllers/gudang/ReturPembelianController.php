@@ -1076,7 +1076,7 @@ class ReturPembelianController extends Controller
    */
   public function destroy($id)
   {
-    $data = ReturPembelian::query()->where('id', $id)->first()->toArray();
+    $data = ReturPembelian::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = ReturPembelian::where('id', $id)->delete();
     if ($ok) {
