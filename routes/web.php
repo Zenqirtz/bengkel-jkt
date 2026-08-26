@@ -146,7 +146,8 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/akun/ubah-sandi', [UbahSandiController::class, 'UbahSandi'])->name('akun-ubah-sandi');
-    Route::resource('/ubah-sandi', UbahSandiController::class);
+    Route::get('/ubah-sandi', [UbahSandiController::class, 'UbahSandi'])->name('ubah-sandi.index');
+    Route::post('/ubah-sandi', [UbahSandiController::class, 'store'])->name('ubah-sandi.store');
     Route::get('/logout2', [Logout::class, 'index'])->name('logout2');
 });
 
