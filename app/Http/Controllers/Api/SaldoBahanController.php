@@ -28,10 +28,12 @@ class SaldoBahanController extends Controller
         ->where('tahun', $tahun)
         ->first();
 
-        $items->kode_satuan2 = $bahan->kode_satuan2;
-        $items->unit_akhir = number_format($items->unit_akhir, 2, '.', ',');
-        $items->harga_akhir = number_format($items->harga_akhir, 2, '.', ',');
-        $items->jumlah_akhir = number_format($items->jumlah_akhir, 2, '.', ',');
+        if ($items) {
+            $items->kode_satuan2 = $bahan ? $bahan->kode_satuan2 : '';
+            $items->unit_akhir = number_format($items->unit_akhir ?? 0, 2, '.', ',');
+            $items->harga_akhir = number_format($items->harga_akhir ?? 0, 2, '.', ',');
+            $items->jumlah_akhir = number_format($items->jumlah_akhir ?? 0, 2, '.', ',');
+        }
 
         // Kembalikan array string, sesuai script fetch Anda
         return response()->json($items, 200, ['Content-Type' => 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
