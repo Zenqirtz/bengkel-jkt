@@ -297,7 +297,7 @@ class GroupController extends Controller
    */
   public function destroy($id)
   {
-    $data = Group::query()->where('id', $id)->first()->toArray();
+    $data = Group::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Group::where('id', $id)->delete();
 
