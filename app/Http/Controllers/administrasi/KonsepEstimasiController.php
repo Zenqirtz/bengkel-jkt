@@ -99,7 +99,8 @@ class KonsepEstimasiController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -921,24 +922,18 @@ class KonsepEstimasiController extends Controller
       $desc = $result ? 'Berhasil Tambah Konsep Estimasi' : 'Gagal Tambah Konsep Estimasi';
       LogActivity::saveLogActivity($desc, $data);
 
-      return response()->json([
-        'status'  => (bool)$result,
-        'message' => $desc
-      ]);
     }
-  }
-
-  /**
+  }  /**
    * Display the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
-  public function show($id)
+  public function show($id): JsonResponse
   {
     $data = DB::table('v_trx_konsep_estimasi')->where('id', $id)->first();
 
-    if (blank($data)) {
+    if (!$data || blank($data)) {
       $result = false;
       return response()->json([
         'status'  => (bool)$result,
@@ -958,12 +953,20 @@ class KonsepEstimasiController extends Controller
    * Show the form for editing the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function edit($id): JsonResponse
   {
     // $data = Spk::findOrFail($id);
     $data = DB::table('v_spk')->where('id', $id)->first();
+
+    if (!$data || blank($data)) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data SPK tidak ditemukan!'
+      ]);
+    }
+
     $dataEstimasi = KonsepEstimasi::query()->where('kode_cabang', $data->kode_cabang)->where('kode_spk', $data->kode_spk)->first();
 
     if ($dataEstimasi) {
@@ -973,21 +976,43 @@ class KonsepEstimasiController extends Controller
       $data->kode_pelanggan = $dataEstimasi->kode_pelanggan;
       $data->kode_estimator = $dataEstimasi->kode_estimator;
       $data->lama_pekerjaan = $dataEstimasi->lama_pekerjaan;
+      $data->sifat_ppn = $dataEstimasi->sifat_ppn;
+      $data->sparepart_ppn = $dataEstimasi->sparepart_ppn;
+      $data->lain_ppn = $dataEstimasi->lain_ppn;
       $data->memo = $dataEstimasi->memo;
-      $data->konsep_id = $dataEstimasi->id;
+
+      $data->total_perbaikan = number_format($dataEstimasi->total_perbaikan, 2, '.', ',');
+      $data->total_sparepart = number_format($dataEstimasi->total_sparepart, 2, '.', ',');
+      $data->total_lain = number_format($dataEstimasi->total_lain, 2, '.', ',');
+      $data->total_or = number_format($dataEstimasi->total_or, 2, '.', ',');
+      $data->ppn = number_format($dataEstimasi->ppn, 2, '.', ',');
+      $data->total = number_format($dataEstimasi->total, 2, '.', ',');
     } else {
-      $data->tgl_konsep = date("d/m/Y");
-      $data->lama_pekerjaan = 0;
-      $data->memo = '';
-      $data->konsep_id = '';
-      $data->nama_surveyor = '';
+      $data->tgl_konsep = '';
       $data->tgl_survey = '';
+      $data->nama_surveyor = '';
+      $data->kode_pelanggan = '';
+      $data->kode_estimator = '';
+      $data->lama_pekerjaan = 0;
+      $data->sifat_ppn = 0;
+      $data->sparepart_ppn = 0;
+      $data->lain_ppn = 0;
+      $data->memo = '';
+
+      $data->total_perbaikan = 0;
+      $data->total_sparepart = 0;
+      $data->total_lain = 0;
+      $data->total_or = 0;
+      $data->ppn = 0;
+      $data->total = 0;
     }
 
-
-    $data->tgl_batal = blank($data->tgl_batal) ? '' : date("d/m/Y", strtotime($data->tgl_batal));
-    $data->tgl_keluar = blank($data->tgl_keluar) ? '' : date("d/m/Y", strtotime($data->tgl_keluar));
-    return response()->json($data);
+    $result = true;
+    return response()->json([
+      'status'  => (bool)$result,
+      'message' => 'Berhasil Kirim Konsep Estimasi',
+      'data' => $data
+    ]);
   }
 
   /**
@@ -1012,16 +1037,11 @@ class KonsepEstimasiController extends Controller
 
   public function cetakKonsepEstimasi(Request $request)
   {
-    $user_cabang = session('kd_cabang');
-    $namaCabang = session('nm_cabang');
-
-    $title = 'Cetak Konsep Estimasi';
-
     $id = $request->id;
 
     $data = DB::table('v_trx_konsep_estimasi')->where('id', $id)->first();
 
-    if (blank($data)) {
+    if (!$data || blank($data)) {
       $pageConfigs = ['myLayout' => 'blank'];
       return view('content.error.not-found', ['pageConfigs' => $pageConfigs]);
     }
@@ -1033,11 +1053,14 @@ class KonsepEstimasiController extends Controller
     $data->total = number_format($data->total, 0, ".", ",");
 
     $cabang = ProfilePerusahaan::where('kode_cabang', $data->kode_cabang)->first();
-    $cabang->alamat1 = sprintf("%s %s %s", $cabang->alamat1, $cabang->alamat2, $cabang->alamat3);
-
-    $dest = public_path('assets/img/cabang');
-    $logo_cabang = $dest . DIRECTORY_SEPARATOR . $cabang->logo_cabang;
-    $file_logo = (is_file($logo_cabang)) ? "1" : "0";
+    if ($cabang) {
+      $cabang->alamat1 = sprintf("%s %s %s", $cabang->alamat1 ?? '', $cabang->alamat2 ?? '', $cabang->alamat3 ?? '');
+      $dest = public_path('assets/img/cabang');
+      $logo_cabang = $dest . DIRECTORY_SEPARATOR . ($cabang->logo_cabang ?? '');
+      $file_logo = (!empty($cabang->logo_cabang) && is_file($logo_cabang)) ? "1" : "0";
+    } else {
+      $file_logo = "0";
+    }
 
     // $data->terbilang = Helper::terbilang_rupiah($data->total_or);
 
