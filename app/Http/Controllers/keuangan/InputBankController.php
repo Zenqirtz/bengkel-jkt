@@ -396,7 +396,7 @@ class InputBankController extends Controller
   //     ->select('h.*', 'b.nama_bank')
   //     ->first();
 
-  //   if (blank($data)) {
+  //   if (!$data || blank($data)) {
   //     return response()->json(['status' => false, 'message' => 'Data tidak ditemukan.']);
   //   }
 
@@ -444,7 +444,7 @@ class InputBankController extends Controller
       ->select('h.*', 'b.nama_bank')
       ->first();
 
-    if (blank($data)) {
+    if (!$data || blank($data)) {
       return response()->json(['status' => false, 'message' => 'Data tidak ditemukan.']);
     }
 
