@@ -305,7 +305,7 @@ class ParameterController extends Controller
    */
   public function destroy($id)
   {
-    $data = Parameter::query()->where('id', $id)->first()->toArray();
+    $data = Parameter::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Parameter::where('id', $id)->delete();
 
