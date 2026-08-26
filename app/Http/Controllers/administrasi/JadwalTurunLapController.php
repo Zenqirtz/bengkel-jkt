@@ -500,7 +500,7 @@ class JadwalTurunLapController extends Controller
     // $data = Spk::findOrFail($id);
     $data = DB::table('v_trx_turun_lapangan')->where('id', $id)->first();
 
-    if (blank($data)) {
+    if (!$data || blank($data)) {
       $result = false;
       return response()->json([
         'status' => (bool) $result,
