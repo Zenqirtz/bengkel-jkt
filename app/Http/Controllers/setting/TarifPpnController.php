@@ -275,7 +275,7 @@ class TarifPpnController extends Controller
    */
   public function destroy($id)
   {
-    $data = TarifPpn::query()->where('id', $id)->first()->toArray();
+    $data = TarifPpn::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = TarifPpn::where('id', $id)->delete();
 
