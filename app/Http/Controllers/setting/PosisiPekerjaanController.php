@@ -290,7 +290,7 @@ class PosisiPekerjaanController extends Controller
    */
   public function destroy($id)
   {
-    $data = PosisiPekerjaan::query()->where('id', $id)->first()->toArray();
+    $data = PosisiPekerjaan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = PosisiPekerjaan::where('id', $id)->delete();
 
