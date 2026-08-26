@@ -61,7 +61,8 @@ class KirimEstimasiController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -360,14 +361,14 @@ class KirimEstimasiController extends Controller
    * Show the form for editing the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function edit($id): JsonResponse
   {
     // $data = Spk::findOrFail($id);
     $data = DB::table('v_trx_estimasi')->where('id', $id)->first();
 
-    if(blank($data)) {
+    if (!$data || blank($data)) {
       $result = false;
       return response()->json([
         'status'  => (bool)$result,
