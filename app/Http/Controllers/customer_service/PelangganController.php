@@ -61,7 +61,8 @@ class PelangganController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -442,7 +443,7 @@ class PelangganController extends Controller
       }
     }
 
-    $data = Pelanggan::query()->where('id', $id)->first()->toArray();
+    $data = Pelanggan::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Pelanggan::where('id', $id)->delete();
 
