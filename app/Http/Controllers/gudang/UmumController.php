@@ -337,7 +337,7 @@ class UmumController extends Controller
    */
   public function destroy($id)
   {
-    $data = Umum::query()->where('id', $id)->first()->toArray();
+    $data = Umum::query()->where('id', $id)->first()?->toArray() ?? [];
 
     $ok = Umum::where('id', $id)->delete();
 
