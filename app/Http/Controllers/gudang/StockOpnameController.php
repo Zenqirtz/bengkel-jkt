@@ -79,7 +79,7 @@ class StockOpnameController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\JsonResponse
    */
   public function index(Request $request): JsonResponse
   {
@@ -681,6 +681,8 @@ class StockOpnameController extends Controller
       $fileName = 'Stock_Saldo_Cat_' . date('Ymd_His') . '.xlsx';
     } elseif ($request->tipe == "S") {
       $fileName = 'Stock_Saldo_Sparepart_' . date('Ymd_His') . '.xlsx';
+    } else {
+      $fileName = 'Stock_Saldo_' . date('Ymd_His') . '.xlsx';
     }
 
     ## Log Activity
