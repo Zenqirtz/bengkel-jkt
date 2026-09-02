@@ -32,8 +32,8 @@ class MenuServiceProvider extends ServiceProvider
     // $horizontalMenuJson = file_get_contents(base_path('resources/menu/horizontalMenu.json'));
     // $horizontalMenuData = json_decode($horizontalMenuJson);
 
-    // Jalankan setelah middleware web/ auth berjalan (saat render view)
-    View::composer('*', function ($view) {
+    // Jalankan saat render layout utama / menu
+    View::composer(['layouts.*', 'layouts/sections/menu/*'], function ($view) {
       static $cachedPerRequest = [];
 
       $user = Auth::user();
