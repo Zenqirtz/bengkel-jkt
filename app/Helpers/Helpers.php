@@ -315,46 +315,54 @@ CSS;
 
   public static function getTitleMenu($nama_path)
   {
-    $detail_menu = Menu::where('url_menu',$nama_path)->first();
-    return $detail_menu->custom_title ?? '';
+    static $titleCache = [];
+    if (isset($titleCache[$nama_path])) {
+      return $titleCache[$nama_path];
+    }
+    $detail_menu = Menu::where('url_menu', $nama_path)->first();
+    $title = $detail_menu->custom_title ?? '';
+    $titleCache[$nama_path] = $title;
+    return $title;
+  }
+
+  public static function getMenuPermissions($path = null): array
+  {
+    static $permCache = [];
+    if (!Auth::check()) {
+      return ['list' => false, 'add' => false, 'edit' => false, 'delete' => false];
+    }
+
+    $userId = Auth::id();
+    $path = $path ?? request()->path();
+    $key = $userId . ':' . $path;
+
+    if (isset($permCache[$key])) {
+      return $permCache[$key];
+    }
+
+    $perms = DB::table('menu as m')
+      ->join('group_detail as gd', 'gd.menuid', '=', 'm.id')
+      ->join('users_group as ug', 'ug.groupid', '=', 'gd.groupid')
+      ->where('ug.userid', $userId)
+      ->where('m.url_menu', 'LIKE', "%{$path}%")
+      ->selectRaw('MAX(gd.isList) as isList, MAX(gd.isAdd) as isAdd, MAX(gd.isEdit) as isEdit, MAX(gd.isDelete) as isDelete')
+      ->first();
+
+    $result = [
+      'list' => (bool) ($perms?->isList ?? 0),
+      'add' => (bool) ($perms?->isAdd ?? 0),
+      'edit' => (bool) ($perms?->isEdit ?? 0),
+      'delete' => (bool) ($perms?->isDelete ?? 0),
+    ];
+
+    $permCache[$key] = $result;
+    return $result;
   }
 
   public static function AuthIsPerm($priv): bool
   {
-      // 1. Cek apakah user sudah login
-      if (!Auth::check()) {
-        return false;
-      }
-
-      // 3. Ambil User ID & URL Params
-      $userId = Auth::id();
-      
-      // Mengambil segment 1 dan 2 (misal: customer-service/kendaraan)
-      $params = request()->path();
-      
-      // 4. Query Database (Menggunakan Query Builder / Explicit Joins)
-      // Logika: Cek apakah ada menu yang cocok dengan URL dan user memiliki akses via group
-      $query = DB::table('menu as m')
-          ->join('group_detail as gd', 'gd.menuid', '=', 'm.id')
-          ->join('group as g', 'g.id', '=', 'gd.groupid') // Asumsi 'pid' adalah link ke group id
-          ->join('users_group as ug', 'ug.groupid', '=', 'g.id')
-          ->where('ug.userid', $userId)
-          ->where('m.url_menu', 'LIKE', "%{$params}%");
-          // ->where('m.active', 1) // Uncomment jika perlu filter aktif
-
-      if ($priv == "list") {
-        $query = $query->where('gd.isList', '1');
-      } elseif ($priv == "add") {
-        $query = $query->where('gd.isAdd', '1');
-      } elseif ($priv == "edit") {
-        $query = $query->where('gd.isEdit', '1');
-      } elseif ($priv == "delete") {
-        $query = $query->where('gd.isDelete', '1');
-      }
-
-      $exists = $query->exists(); // Mengembalikan true jika data ditemukan, false jika tidak
-
-      return $exists;
+    $perms = self::getMenuPermissions();
+    return $perms[$priv] ?? false;
   }
 
   public static function getNomorTransaksi($cabang, $modul)
