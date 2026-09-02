@@ -59,60 +59,57 @@
   }
 
   (async function () {
-
-    // const endpoint = '/api/news';
     const endpoint = '{{ url("/api/news") }}';
-
-    // const SPEED = 65;              // px per detik (atur selera)
-    // const MIN_S = 20, MAX_S = 45;  // batas bawah/atas durasi
-    // // const endpoint = '/api/news';
-
-
     const SPEED = 65;              // px per detik
-    const MIN_S = 20, MAX_S = 120; // Update: Batas atas diperbesar agar teks panjang tidak terlalu ngebut
-    // const endpoint = '/api/news';
-
+    const MIN_S = 20, MAX_S = 120; // Batas durasi
     const ticker = document.querySelector('.ticker');
     if (!ticker) return;
+
+    function renderTicker(items) {
+      ticker.innerHTML = '';
+      if (!items || !items.length) {
+        ticker.innerHTML = '<span class="ticker-item text-body">Belum ada berita terbaru.</span>';
+      } else {
+        items.forEach(txt => {
+          const span = document.createElement('span');
+          span.className = 'ticker-item text-body';
+          span.textContent = txt;
+          ticker.appendChild(span);
+        });
+      }
+
+      requestAnimationFrame(() => {
+        const w = ticker.scrollWidth;
+        let dur = w / SPEED;
+        dur = Math.max(MIN_S, Math.min(MAX_S, dur));
+        ticker.style.setProperty('--dur', dur + 's');
+        ticker.style.setProperty('--start', '0s');
+      });
+    }
+
+    // Check sessionStorage cache (5 min TTL) to avoid blocking single-thread server on page transitions
+    const cached = sessionStorage.getItem('news_ticker_cache');
+    const cacheTime = sessionStorage.getItem('news_ticker_time');
+    const now = Date.now();
+    if (cached && cacheTime && (now - parseInt(cacheTime, 10)) < 300000) {
+      try {
+        renderTicker(JSON.parse(cached));
+        return;
+      } catch (e) {}
+    }
 
     try {
       const res = await fetch(endpoint, { headers: { 'Accept': 'application/json' }});
       const data = await res.json();
       const items = Array.isArray(data) ? data : (data.items || []);
-
-      // Bersihkan isi awal
-      ticker.innerHTML = '';
-
-      if (!items.length) {
-         ticker.innerHTML = '<span class="ticker-item text-body">Belum ada berita terbaru.</span>';
-      } else {
-          items.forEach(txt => {
-            const span = document.createElement('span');
-            span.className = 'ticker-item text-body';
-            span.textContent = txt;
-            ticker.appendChild(span);
-          });
-      }
+      sessionStorage.setItem('news_ticker_cache', JSON.stringify(items));
+      sessionStorage.setItem('news_ticker_time', String(now));
+      renderTicker(items);
     } catch (e) {
-      ticker.innerHTML = '<span class="ticker-item text-body">Gagal memuat berita.</span>';
+      if (!cached) {
+        ticker.innerHTML = '<span class="ticker-item text-body">Belum ada berita terbaru.</span>';
+      }
     }
-
-
-    // Tunggu render selesai untuk hitung lebar
-
-    requestAnimationFrame(() => {
-      // w = lebar total elemen (termasuk padding-left 100% dari CSS)
-      const w = ticker.scrollWidth;
-
-      // Jarak tempuh adalah total lebar elemen itu sendiri
-      let dur = w / SPEED;
-
-      dur = Math.max(MIN_S, Math.min(MAX_S, dur));
-      ticker.style.setProperty('--dur', dur + 's');
-
-      // HAPUS logic start negatif/tengah. Mulai dari 0 agar fresh dari kanan.
-      ticker.style.setProperty('--start', '0s');
-    });
   })();
 </script>
 
