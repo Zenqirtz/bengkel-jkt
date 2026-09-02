@@ -292,6 +292,7 @@ class KirimEstimasiController extends Controller
         'updated_by' => Auth::user()->username
       ];
 
+      $penomoran = null;
       if(blank($request->kode_pengiriman)) {
         $penomoran = Helper::getNomorTransaksi($user_cabang, 'KES');
 
@@ -318,7 +319,7 @@ class KirimEstimasiController extends Controller
           ]
         );
 
-        if(blank($request->kode_pengiriman)) {
+        if(blank($request->kode_pengiriman) && !empty($penomoran)) {
           ## Update Nomor Kirim Estimasi
           $res = Helper::updateNomorTransaksi($user_cabang, 'KES', $penomoran);
         }
