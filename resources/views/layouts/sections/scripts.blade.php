@@ -38,11 +38,16 @@
 
 <script>
   function PleaseWaitPage() {
-    Loading.standard({
-      backgroundColor: 'rgba(' + window.Helpers.getCssVar('black-rgb') + ', 0.5)',
-      svgSize: '0px'
-    });
-    let customSpinnerHTML = `
+    if (typeof Loading !== 'undefined' && Loading.standard) {
+      var bg = (window.Helpers && typeof window.Helpers.getCssVar === 'function')
+        ? 'rgba(' + window.Helpers.getCssVar('black-rgb') + ', 0.5)'
+        : 'rgba(0, 0, 0, 0.5)';
+      Loading.standard({
+        backgroundColor: bg,
+        svgSize: '0px'
+      });
+    }
+    var customSpinnerHTML = `
         <div class="d-flex">
             <p class="mb-0 text-white">Please wait...</p>
             <div class="sk-wave m-0">
@@ -54,8 +59,10 @@
             </div>
         </div>
       `;
-    let notiflixBlock = document.querySelector('.notiflix-loading');
-    notiflixBlock.innerHTML = customSpinnerHTML;
+    var notiflixBlock = document.querySelector('.notiflix-loading');
+    if (notiflixBlock) {
+      notiflixBlock.innerHTML = customSpinnerHTML;
+    }
   }
 
   (async function () {
