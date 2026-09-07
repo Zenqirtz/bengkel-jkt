@@ -105,7 +105,7 @@ class LaporanKwitansiController extends Controller
         $totalData = (clone $query)->count();
 
         // Hitung setelah filter (tanpa limit/offset)
-        $totalFiltered = (clone $query)->count();
+        $totalFiltered = $totalData;
 
         // Ambil data halaman saat ini
         $datas = $query
