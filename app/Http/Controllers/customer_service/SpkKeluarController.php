@@ -428,9 +428,27 @@ class SpkKeluarController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $datas = Spk::where('id', $id)->delete();
+    $spk = Spk::find($id);
+    if (!$spk) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data SPK tidak ditemukan!'
+      ]);
+    }
+
+    $data = $spk->toArray();
+    $ok = $spk->delete();
+
+    ## Log Activity
+    $desc = $ok ? 'Berhasil Hapus SPK Keluar' : 'Gagal Hapus SPK Keluar';
+    LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   public function cetakKendaraanKeluar(Request $request)
