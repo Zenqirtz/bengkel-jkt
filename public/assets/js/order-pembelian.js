@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
           { data: 'qty' },
           { data: 'harga' },
           { data: 'jumlah' },
-          { data: 'action' }
+          { data: 'action', defaultContent: '' }
         ],
         columnDefs: [
           {
