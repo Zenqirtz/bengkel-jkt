@@ -60,7 +60,7 @@
          { data: 'kertas' },
          { data: 'font' },
          { data: 'paragraph' },
-         { data: 'action' }
+         { data: 'action', defaultContent: '' }
        ],
        columnDefs: [
          {
