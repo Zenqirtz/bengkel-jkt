@@ -105,7 +105,7 @@
           { data: 'status_spk' },
           { data: 'no_polis' },
           { data: 'kode_claim' },
-          { data: 'action' }
+          { data: 'action', defaultContent: '' }
        ],
        columnDefs: [
         //  {
@@ -557,7 +557,7 @@
                 { data: 'panel_pekerjaan' },
                 { data: 'harga' },
                 { data: 'tipe' },
-                { data: 'action' }
+                { data: 'action', defaultContent: '' }
               ],
               columnDefs: [
                 {
@@ -675,7 +675,7 @@
                 { data: 'harga' },
                 { data: 'jumlah' },
                 { data: 'tipe' },
-                { data: 'action' }
+                { data: 'action', defaultContent: '' }
               ],
               columnDefs: [
                 {
@@ -810,7 +810,7 @@
                 { data: 'memo' },
                 { data: 'harga' },
                 { data: 'tipe' },
-                { data: 'action' }
+                { data: 'action', defaultContent: '' }
               ],
               columnDefs: [
                 {
