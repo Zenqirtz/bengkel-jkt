@@ -85,7 +85,7 @@
           { data: 'status_spk' },
           { data: 'no_polis' },
           { data: 'kode_claim' },
-          { data: 'action' }
+          { data: 'action', defaultContent: '' }
        ],
        columnDefs: [
         //  {
