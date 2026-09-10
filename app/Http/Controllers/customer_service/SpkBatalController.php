@@ -422,15 +422,27 @@ class SpkBatalController extends Controller
    */
   public function update(Request $request, $id) {}
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    // $datas = Spk::where('id', $id)->delete();
+    $spk = Spk::find($id);
+    if (!$spk) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data SPK Batal tidak ditemukan!'
+      ]);
+    }
+
+    $data = $spk->toArray();
+    $ok = $spk->delete();
+
+    ## Log Activity
+    $desc = $ok ? 'Berhasil Hapus SPK Batal' : 'Gagal Hapus SPK Batal';
+    LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
 }
