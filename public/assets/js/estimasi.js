@@ -581,7 +581,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 { data: 'panel_pekerjaan' },
                 { data: 'harga' },
                 { data: 'tipe' },
-                { data: 'action' }
+                { data: 'action', defaultContent: '' }
               ],
               columnDefs: [
                 {
@@ -699,7 +699,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 { data: 'harga' },
                 { data: 'jumlah' },
                 { data: 'tipe' },
-                { data: 'action' }
+                { data: 'action', defaultContent: '' }
               ],
               columnDefs: [
                 {
@@ -835,7 +835,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 { data: 'memo' },
                 { data: 'harga' },
                 { data: 'tipe' },
-                { data: 'action' }
+                { data: 'action', defaultContent: '' }
               ],
               columnDefs: [
                 {
@@ -1588,7 +1588,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 { data: 'panel_pekerjaan' },
                 { data: 'harga' },
                 { data: 'tipe' },
-                { data: 'action' }
+                { data: 'action', defaultContent: '' }
               ],
               columnDefs: [
                 {
@@ -1701,7 +1701,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 { data: 'harga' },
                 { data: 'jumlah' },
                 { data: 'tipe' },
-                { data: 'action' }
+                { data: 'action', defaultContent: '' }
               ],
               columnDefs: [
                 {
@@ -1836,7 +1836,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
                 { data: 'memo' },
                 { data: 'harga' },
                 { data: 'tipe' },
-                { data: 'action' }
+                { data: 'action', defaultContent: '' }
               ],
               columnDefs: [
                 {
