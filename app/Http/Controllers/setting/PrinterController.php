@@ -202,8 +202,21 @@ class PrinterController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $datas = Printer::where('id', $id)->delete();
+    $printer = Printer::find($id);
+    if (!$printer) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data printer tidak ditemukan!'
+      ], 404);
+    }
+
+    $ok = $printer->delete();
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $ok ? 'Berhasil hapus data printer' : 'Gagal hapus data printer'
+    ]);
   }
 }
