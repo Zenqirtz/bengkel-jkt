@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
         { data: 'kota' },
         { data: 'telepon' },
         { data: 'handphone' },
-        { data: 'action' }
+        { data: 'action', defaultContent: '' }
       ],
       columnDefs: [
         {
