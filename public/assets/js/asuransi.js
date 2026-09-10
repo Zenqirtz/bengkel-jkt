@@ -62,7 +62,7 @@
          { data: 'jenis_pelanggan' },
          { data: 'telepon' },
          { data: 'status_aktif' },
-         { data: 'action' }
+         { data: 'action', defaultContent: '' }
        ],
        columnDefs: [
          {
