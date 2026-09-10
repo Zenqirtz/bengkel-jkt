@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
         { data: 'file_backup' },
         { data: 'file_size' },
         { data: 'created_at' },
-        { data: 'action' }
+        { data: 'action', defaultContent: '' }
       ],
       columnDefs: [
         {
