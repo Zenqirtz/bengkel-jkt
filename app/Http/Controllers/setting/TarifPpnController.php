@@ -273,14 +273,26 @@ class TarifPpnController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = TarifPpn::query()->where('id', $id)->first()?->toArray() ?? [];
+    $ppn = TarifPpn::find($id);
+    if (!$ppn) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data tarif PPN tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = TarifPpn::where('id', $id)->delete();
+    $data = $ppn->toArray();
+    $ok = $ppn->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Tarif PPN' : 'Gagal Hapus Data Tarif PPN';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
