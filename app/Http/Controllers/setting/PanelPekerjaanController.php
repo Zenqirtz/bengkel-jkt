@@ -328,14 +328,26 @@ class PanelPekerjaanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = PanelPekerjaan::query()->where('id', $id)->first()?->toArray() ?? [];
+    $panel = PanelPekerjaan::find($id);
+    if (!$panel) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data panel pekerjaan tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = PanelPekerjaan::where('id', $id)->delete();
+    $data = $panel->toArray();
+    $ok = $panel->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Panel Pekerjaan' : 'Gagal Hapus Data Panel Pekerjaan';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
