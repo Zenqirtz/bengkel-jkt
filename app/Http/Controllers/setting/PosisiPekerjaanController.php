@@ -288,14 +288,26 @@ class PosisiPekerjaanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = PosisiPekerjaan::query()->where('id', $id)->first()?->toArray() ?? [];
+    $posisi = PosisiPekerjaan::find($id);
+    if (!$posisi) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data posisi pekerjaan tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = PosisiPekerjaan::where('id', $id)->delete();
+    $data = $posisi->toArray();
+    $ok = $posisi->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Posisi Pekerjaan' : 'Gagal Hapus Data Posisi Pekerjaan';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
