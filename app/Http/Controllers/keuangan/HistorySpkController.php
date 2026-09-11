@@ -484,13 +484,15 @@ class HistorySpkController extends Controller
     // $data = Spk::findOrFail($id);
     $data = DB::table('v_spk_history')->where('id', $id)->first();
 
-    if(blank($data)) {
+    if (!$data || blank($data)) {
       $result = false;
       return response()->json([
         'status'  => (bool)$result,
         'message' => 'Estimasi belum dibuat!'
       ]);
     }
+
+    /** @var object $data */
 
     $data->tgl_kwitansi = blank($data->tgl_kwitansi) ? '' : date("d/m/Y", strtotime($data->tgl_kwitansi));
     $data->tgl_kirim_kwitansi = blank($data->tgl_kirim_kwitansi) ? '' : date("d/m/Y", strtotime($data->tgl_kirim_kwitansi));
