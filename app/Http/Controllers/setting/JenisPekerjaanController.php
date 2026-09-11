@@ -312,14 +312,26 @@ class JenisPekerjaanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = JenisPekerjaan::query()->where('id', $id)->first()?->toArray() ?? [];
+    $jenis = JenisPekerjaan::find($id);
+    if (!$jenis) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data jenis pekerjaan tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = JenisPekerjaan::where('id', $id)->delete();
+    $data = $jenis->toArray();
+    $ok = $jenis->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Jenis Pekerjaan' : 'Gagal Hapus Data Jenis Pekerjaan';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
