@@ -280,14 +280,27 @@ class JenisKendaraanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = JenisKendaraan::query()->where('id', $id)->first()?->toArray() ?? [];
+    $jenis = JenisKendaraan::find($id);
+    if (!$jenis) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data jenis kendaraan tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = JenisKendaraan::where('id', $id)->delete();
+    $data = $jenis->toArray();
+    $ok = $jenis->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Jenis Kendaraan' : 'Gagal Hapus Data Jenis Kendaraan';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
+
