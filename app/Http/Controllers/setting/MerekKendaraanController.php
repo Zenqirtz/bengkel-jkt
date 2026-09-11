@@ -279,14 +279,26 @@ class MerekKendaraanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = MerekKendaraan::query()->where('id', $id)->first()?->toArray() ?? [];
+    $merek = MerekKendaraan::find($id);
+    if (!$merek) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data merek kendaraan tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = MerekKendaraan::where('id', $id)->delete();
+    $data = $merek->toArray();
+    $ok = $merek->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Merek Kendaraan' : 'Gagal Hapus Data Merek Kendaraan';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
