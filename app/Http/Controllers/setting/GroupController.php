@@ -295,14 +295,26 @@ class GroupController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Group::query()->where('id', $id)->first()?->toArray() ?? [];
+    $group = Group::find($id);
+    if (!$group) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data group tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Group::where('id', $id)->delete();
+    $data = $group->toArray();
+    $ok = $group->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Group' : 'Gagal Hapus Data Group';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
