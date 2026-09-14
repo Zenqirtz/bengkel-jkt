@@ -329,14 +329,26 @@ class MenuController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Menu::query()->where('id', $id)->first()?->toArray() ?? [];
+    $menu = Menu::find($id);
+    if (!$menu) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data menu tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Menu::where('id', $id)->delete();
+    $data = $menu->toArray();
+    $ok = $menu->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Menu' : 'Gagal Hapus Data Menu';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
