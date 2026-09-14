@@ -380,14 +380,26 @@ class PenomoranTransaksiController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = PenomoranTransaksi::query()->where('id', $id)->first()?->toArray() ?? [];
+    $penomoran = PenomoranTransaksi::find($id);
+    if (!$penomoran) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data penomoran transaksi tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = PenomoranTransaksi::where('id', $id)->delete();
+    $data = $penomoran->toArray();
+    $ok = $penomoran->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Penomoran Transaksi' : 'Gagal Hapus Data Penomoran Transaksi';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
