@@ -234,14 +234,26 @@ class PeriodePembukuanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = PeriodePembukuan::query()->where('id', $id)->first()?->toArray() ?? [];
+    $periode = PeriodePembukuan::find($id);
+    if (!$periode) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data periode pembukuan tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = PeriodePembukuan::where('id', $id)->delete();
+    $data = $periode->toArray();
+    $ok = $periode->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Periode Pembukuan' : 'Gagal Hapus Data Periode Pembukuan';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
