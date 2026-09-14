@@ -280,23 +280,32 @@ class BackupDBController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $result = BackupDB::findOrFail($id);
-    if ($result) {
-      $fileName = $result->file_backup;
-      if (Storage::disk('backups')->exists($fileName)) {
-        Storage::disk('backups')->delete($fileName);
-      }
+    $backup = BackupDB::find($id);
+    if (!$backup) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data backup tidak ditemukan!'
+      ], 404);
     }
 
-    $data = BackupDB::query()->where('id', $id)->first()?->toArray() ?? [];
+    $fileName = $backup->file_backup;
+    if (Storage::disk('backups')->exists($fileName)) {
+      Storage::disk('backups')->delete($fileName);
+    }
 
-    $ok = BackupDB::where('id', $id)->delete();
+    $data = $backup->toArray();
+    $ok = $backup->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Backup Database' : 'Gagal Hapus Backup Database';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   /**
