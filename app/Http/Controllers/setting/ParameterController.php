@@ -303,14 +303,26 @@ class ParameterController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Parameter::query()->where('id', $id)->first()?->toArray() ?? [];
+    $param = Parameter::find($id);
+    if (!$param) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data parameter tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Parameter::where('id', $id)->delete();
+    $data = $param->toArray();
+    $ok = $param->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Parameter' : 'Gagal Hapus Data Parameter';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
