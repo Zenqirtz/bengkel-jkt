@@ -228,14 +228,26 @@ class PengumumanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Pengumuman::query()->where('id', $id)->first()?->toArray() ?? [];
+    $pengumuman = Pengumuman::find($id);
+    if (!$pengumuman) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data pengumuman tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Pengumuman::where('id', $id)->delete();
+    $data = $pengumuman->toArray();
+    $ok = $pengumuman->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Pengumuman' : 'Gagal Hapus Data Pengumuman';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
