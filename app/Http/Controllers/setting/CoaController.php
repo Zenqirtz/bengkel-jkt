@@ -320,14 +320,26 @@ class CoaController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Coa::query()->where('id', $id)->first()?->toArray() ?? [];
+    $coa = Coa::find($id);
+    if (!$coa) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data COA tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Coa::where('id', $id)->delete();
+    $data = $coa->toArray();
+    $ok = $coa->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data COA' : 'Gagal Hapus Data COA';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
