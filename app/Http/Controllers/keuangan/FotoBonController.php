@@ -357,17 +357,25 @@ class FotoBonController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = InputGudangFoto::query()
-      ->select('id', 'kode_cabang', 'kode_input', 'no_urut', 'nama_file', 'ukuran', 'created_at', 'created_by')
-      ->where('id', $id)
-      ->first()
-      ->toArray();
+    $foto = InputGudangFoto::find($id);
+    if (!$foto) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data foto bon tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = InputGudangFoto::where('id', $id)->delete();
+    $data = $foto->toArray();
+    $ok = $foto->delete();
     $desc = $ok ? 'Berhasil Hapus Foto Bon' : 'Gagal Hapus Foto Bon';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   /**
