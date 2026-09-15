@@ -321,14 +321,26 @@ class CatController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Cat::query()->where('id', $id)->first()?->toArray() ?? [];
+    $cat = Cat::find($id);
+    if (!$cat) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data rasio cat tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Cat::where('id', $id)->delete();
+    $data = $cat->toArray();
+    $ok = $cat->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Rasio Cat' : 'Gagal Hapus Data Rasio Cat';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
