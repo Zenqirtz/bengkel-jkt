@@ -388,14 +388,26 @@ class BahanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Bahan::query()->where('id', $id)->first()?->toArray() ?? [];
+    $bahan = Bahan::find($id);
+    if (!$bahan) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data bahan tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Bahan::where('id', $id)->delete();
+    $data = $bahan->toArray();
+    $ok = $bahan->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Bahan' : 'Gagal Hapus Data Bahan';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
