@@ -550,11 +550,18 @@ class BuktiPenerimaanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = BuktiPenerimaan::query()->where('id', $id)->first()?->toArray() ?? [];
+    $penerimaan = BuktiPenerimaan::find($id);
+    if (!$penerimaan) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data bukti penerimaan tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = BuktiPenerimaan::where('id', $id)->delete();
+    $data = $penerimaan->toArray();
+    $ok = $penerimaan->delete();
     if ($ok) {
       BuktiPenerimaanDetail::where('kode_cabang', $data['kode_cabang'])->where('no_transaksi', $data['no_transaksi'])->delete();
     }
@@ -562,6 +569,11 @@ class BuktiPenerimaanController extends Controller
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Bukti Penerimaan' : 'Gagal Hapus Bukti Penerimaan';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   public function cetakBuktiPenerimaan(Request $request)
