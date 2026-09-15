@@ -352,14 +352,26 @@ class BankController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Bank::query()->select('id','kode_bank','nama_bank')->where('id', $id)->first()?->toArray() ?? [];
+    $bank = Bank::find($id);
+    if (!$bank) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data bank tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Bank::where('id', $id)->delete();
+    $data = $bank->toArray();
+    $ok = $bank->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Bank.' : 'Gagal Hapus Data Bank.';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
