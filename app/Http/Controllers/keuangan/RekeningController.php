@@ -295,14 +295,26 @@ class RekeningController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Rekening::query()->select('id','kode_cabang','kode_bank','no_rekening')->where('id', $id)->first()?->toArray() ?? [];
+    $rekening = Rekening::find($id);
+    if (!$rekening) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data rekening tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Rekening::where('id', $id)->delete();
+    $data = $rekening->toArray();
+    $ok = $rekening->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Rekening.' : 'Gagal Hapus Data Rekening.';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
