@@ -377,16 +377,25 @@ class UangMukaPembelianController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
     $data = UangMukaPembelian::where('id', $id)->first();
-    if (!$data)
-      return;
+    if (!$data) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data uang muka pembelian tidak ditemukan!'
+      ], 404);
+    }
 
     $arr = $data->toArray();
     $ok = $data->delete();
 
     $desc = $ok ? 'Berhasil Hapus Uang Muka Pembelian' : 'Gagal Hapus Uang Muka Pembelian';
     LogActivity::saveLogActivity($desc, $arr);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
