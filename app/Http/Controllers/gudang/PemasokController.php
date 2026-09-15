@@ -474,25 +474,34 @@ class PemasokController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $result = Pemasok::findOrFail($id);
-    if ($result) {
-      $dest = public_path('assets/img/pemasok');
-      $photo = $result->file_npwp;
-      $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-      if (is_file($photoPath)) {
-        @unlink($photoPath);
-      }
+    $result = Pemasok::find($id);
+    if (!$result) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data pemasok tidak ditemukan!'
+      ], 404);
     }
 
-    $data = Pemasok::query()->where('id', $id)->first()?->toArray() ?? [];
+    $dest = public_path('assets/img/pemasok');
+    $photo = $result->file_npwp;
+    $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
+    if (is_file($photoPath)) {
+      @unlink($photoPath);
+    }
 
-    $ok = Pemasok::where('id', $id)->delete();
+    $data = $result->toArray();
+    $ok = $result->delete();
 
     ## Log Activity
-    $desc = $ok ? 'Berhasil Hapus Data Data Pemasok' : 'Gagal Hapus Data Data Pemasok';
+    $desc = $ok ? 'Berhasil Hapus Data Pemasok' : 'Gagal Hapus Data Pemasok';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   public function downloadFile(Request $request)
