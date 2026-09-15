@@ -340,14 +340,26 @@ class SparepartController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Sparepart::query()->where('id', $id)->first()?->toArray() ?? [];
+    $sparepart = Sparepart::find($id);
+    if (!$sparepart) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data sparepart tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Sparepart::where('id', $id)->delete();
+    $data = $sparepart->toArray();
+    $ok = $sparepart->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Sparepart' : 'Gagal Hapus Data Sparepart';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
