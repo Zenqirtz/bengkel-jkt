@@ -366,14 +366,26 @@ class PerantaraController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Perantara::query()->where('id', $id)->first()?->toArray() ?? [];
+    $perantara = Perantara::find($id);
+    if (!$perantara) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data perantara tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Perantara::where('id', $id)->delete();
+    $data = $perantara->toArray();
+    $ok = $perantara->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Perantara.' : 'Gagal Hapus Data Perantara.';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
