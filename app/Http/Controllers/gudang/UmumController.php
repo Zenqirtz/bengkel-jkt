@@ -335,14 +335,26 @@ class UmumController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Umum::query()->where('id', $id)->first()?->toArray() ?? [];
+    $umum = Umum::find($id);
+    if (!$umum) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data barang umum tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Umum::where('id', $id)->delete();
+    $data = $umum->toArray();
+    $ok = $umum->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Barang Umum' : 'Gagal Hapus Data Barang Umum';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
