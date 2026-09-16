@@ -482,32 +482,40 @@ class PemilikController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $result = Pemilik::findOrFail($id);
-    if ($result) {
-      $dest = public_path('assets/img/pemilik');
-      $photo = $result->file_ktp;
-      $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-      if (is_file($photoPath)) {
-        @unlink($photoPath);
-      }
-
-      $dest = public_path('assets/img/pemilik');
-      $photo = $result->file_npwp;
-      $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-      if (is_file($photoPath)) {
-        @unlink($photoPath);
-      }
+    $result = Pemilik::find($id);
+    if (!$result) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data pemilik tidak ditemukan!'
+      ], 404);
     }
 
-    $data = Pemilik::query()->where('id', $id)->first()?->toArray() ?? [];
+    $dest = public_path('assets/img/pemilik');
+    $photo = $result->file_ktp;
+    $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
+    if (is_file($photoPath)) {
+      @unlink($photoPath);
+    }
 
-    $ok = Pemilik::where('id', $id)->delete();
+    $photoNpwp = $result->file_npwp;
+    $photoNpwpPath = $dest.DIRECTORY_SEPARATOR.$photoNpwp;
+    if (is_file($photoNpwpPath)) {
+      @unlink($photoNpwpPath);
+    }
+
+    $data = $result->toArray();
+    $ok = $result->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Pemilik.' : 'Gagal Hapus Data Pemilik.';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   public function downloadFile(Request $request)
