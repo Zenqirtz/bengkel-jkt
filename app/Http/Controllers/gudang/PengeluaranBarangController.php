@@ -1160,11 +1160,18 @@ class PengeluaranBarangController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = PengeluaranBarang::query()->where('id', $id)->first()?->toArray() ?? [];
+    $pengeluaran = PengeluaranBarang::find($id);
+    if (!$pengeluaran) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data pengeluaran barang tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = PengeluaranBarang::where('id', $id)->delete();
+    $data = $pengeluaran->toArray();
+    $ok = $pengeluaran->delete();
     if ($ok) {
       PengeluaranBarangDetail::where('kode_cabang', $data['kode_cabang'])->where('seq_no', $data['seq_no'])->delete();
     }
@@ -1172,6 +1179,11 @@ class PengeluaranBarangController extends Controller
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Pengeluaran Barang' : 'Gagal Hapus Pengeluaran Barang';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   public function getDataSPK(Request $request): JsonResponse
