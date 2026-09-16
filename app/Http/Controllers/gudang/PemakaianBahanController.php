@@ -379,15 +379,27 @@ class PemakaianBahanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = PemakaianBahan::query()->where('id', $id)->first()?->toArray() ?? [];
+    $pemakaian = PemakaianBahan::find($id);
+    if (!$pemakaian) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data pemakaian bahan tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = PemakaianBahan::where('id', $id)->delete();
+    $data = $pemakaian->toArray();
+    $ok = $pemakaian->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Pemakaian Bahan' : 'Gagal Hapus Data Pemakaian Bahan';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   public function getNamaBahan(Request $request): JsonResponse
