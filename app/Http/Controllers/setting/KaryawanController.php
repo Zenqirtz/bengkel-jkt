@@ -798,46 +798,27 @@ class KaryawanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    // $result = Karyawan::findOrFail($id);
-    // if ($result) {
-    //   $dest = public_path('assets/img/ktp');
-    //   $photo = $result->file_ktp;
-    //   $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-    //   if (is_file($photoPath)) {
-    //     @unlink($photoPath);
-    //   }
-
-    //   $dest = public_path('assets/img/karyawan');
-    //   $photo = $result->file_photo;
-    //   $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-    //   if (is_file($photoPath)) {
-    //     @unlink($photoPath);
-    //   }
-    // }
-    $data = Karyawan::query()->where('id', $id)->first()?->toArray() ?? [];
-
-    $ok = Karyawan::where('id', $id)->delete();
-    if($ok) {
-      ## Hapus File 
-      // $dest = public_path('assets/img/karyawan');
-      // $photo = $data['file_photo'];
-      // $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-      // if (is_file($photoPath)) {
-      //   @unlink($photoPath);
-      // }
-
-      // $photo = $data['file_ktp'];
-      // $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-      // if (is_file($photoPath)) {
-      //   @unlink($photoPath);
-      // }
+    $karyawan = Karyawan::find($id);
+    if (!$karyawan) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data karyawan tidak ditemukan!'
+      ], 404);
     }
+
+    $data = $karyawan->toArray();
+    $ok = $karyawan->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Karyawan' : 'Gagal Hapus Karyawan';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   public function downloadFile(Request $request)
