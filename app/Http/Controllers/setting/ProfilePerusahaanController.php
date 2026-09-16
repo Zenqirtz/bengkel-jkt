@@ -417,22 +417,19 @@ class ProfilePerusahaanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    // $result = ProfilePerusahaan::findOrFail($id);
-    // if ($result) {
-    //   $dest = public_path('assets/img/cabang');
-    //   $photo = $result->logo_cabang;
-    //   $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-    //   if (is_file($photoPath)) {
-    //     @unlink($photoPath);
-    //   }
-    // }
+    $perusahaan = ProfilePerusahaan::find($id);
+    if (!$perusahaan) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data profile perusahaan tidak ditemukan!'
+      ], 404);
+    }
 
-    $data = ProfilePerusahaan::query()->where('id', $id)->first()?->toArray() ?? [];
-
-    $ok = ProfilePerusahaan::where('id', $id)->delete();
-    if($ok) {
+    $data = $perusahaan->toArray();
+    $ok = $perusahaan->delete();
+    if ($ok && !empty($data['logo_cabang'])) {
       ## Hapus File 
       $dest = public_path('assets/img/cabang');
       $photo = $data['logo_cabang'];
@@ -445,5 +442,10 @@ class ProfilePerusahaanController extends Controller
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Profile Perusahaan' : 'Gagal Hapus Data Profile Perusahaan';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
