@@ -500,28 +500,27 @@ class RegistrasiUser extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    // $user = User::findOrFail($id);
-    // if ($user) {
-    //   $dest = public_path('assets/img/avatars');
-    //   $photo = $user->profile_photo_url;
-    //   $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-    //   if (is_file($photoPath)) {
-    //     @unlink($photoPath);
-    //   }
-    // }
+    $user = User::find($id);
+    if (!$user) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data user tidak ditemukan!'
+      ], 404);
+    }
 
-    $data = User::query()->where('id', $id)->first()?->toArray() ?? [];
-
-    $users = User::where('id', $id)->delete();
+    $data = $user->toArray();
+    $users = $user->delete();
     if($users) {
       ## Hapus File
       $dest = public_path('assets/img/avatars');
-      $photo = $data['profile_photo_url'];
-      $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-      if (is_file($photoPath)) {
-        @unlink($photoPath);
+      $photo = $data['profile_photo_url'] ?? null;
+      if (!empty($photo)) {
+        $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
+        if (is_file($photoPath)) {
+          @unlink($photoPath);
+        }
       }
 
       UserPrivilege::where('userid', $id)->delete();
@@ -531,6 +530,11 @@ class RegistrasiUser extends Controller
     ## Log Activity
     $desc = $users ? 'Berhasil Hapus User' : 'Gagal Hapus User';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$users,
+      'message' => $desc
+    ]);
   }
 
   public function downloadFile(Request $request)
