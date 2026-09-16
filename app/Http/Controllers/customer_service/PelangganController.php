@@ -431,26 +431,34 @@ class PelangganController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $result = Pelanggan::findOrFail($id);
-    if ($result) {
-      $dest = public_path('assets/img/pelanggan');
-      $photo = $result->file_npwp;
-      $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-      if (is_file($photoPath)) {
-        @unlink($photoPath);
-      }
+    $result = Pelanggan::find($id);
+    if (!$result) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data pelanggan tidak ditemukan!'
+      ], 404);
     }
 
-    $data = Pelanggan::query()->where('id', $id)->first()?->toArray() ?? [];
+    $dest = public_path('assets/img/pelanggan');
+    $photo = $result->file_npwp;
+    $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
+    if (is_file($photoPath)) {
+      @unlink($photoPath);
+    }
 
-    $ok = Pelanggan::where('id', $id)->delete();
+    $data = $result->toArray();
+    $ok = $result->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Pelanggan.' : 'Gagal Hapus Data Pelanggan.';
     LogActivity::saveLogActivity($desc, $data);
 
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   public function downloadFile(Request $request)
