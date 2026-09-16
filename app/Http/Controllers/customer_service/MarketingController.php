@@ -332,14 +332,26 @@ class MarketingController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Marketing::query()->where('id', $id)->first()?->toArray() ?? [];
+    $marketing = Marketing::find($id);
+    if (!$marketing) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data marketing tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = Marketing::where('id', $id)->delete();
+    $data = $marketing->toArray();
+    $ok = $marketing->delete();
 
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Data Marketing.' : 'Gagal Hapus Data Marketing.';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 }
