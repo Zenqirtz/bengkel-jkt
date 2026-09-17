@@ -1024,15 +1024,27 @@ class KonsepEstimasiController extends Controller
    */
   public function update(Request $request, $id) {}
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    //$datas = Spk::where('id', $id)->delete();
+    $spk = Spk::find($id);
+    if (!$spk) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data konsep estimasi tidak ditemukan!'
+      ], 404);
+    }
+
+    $data = $spk->toArray();
+    $ok = $spk->delete();
+
+    ## Log Activity
+    $desc = $ok ? 'Berhasil Hapus Konsep Estimasi' : 'Gagal Hapus Konsep Estimasi';
+    LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   public function cetakKonsepEstimasi(Request $request)
