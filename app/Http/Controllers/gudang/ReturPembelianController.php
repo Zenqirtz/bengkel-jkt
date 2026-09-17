@@ -1074,11 +1074,18 @@ class ReturPembelianController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = ReturPembelian::query()->where('id', $id)->first()?->toArray() ?? [];
+    $retur = ReturPembelian::find($id);
+    if (!$retur) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data retur pembelian tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = ReturPembelian::where('id', $id)->delete();
+    $data = $retur->toArray();
+    $ok = $retur->delete();
     if ($ok) {
       ReturPembelianDetail::where('kode_cabang', $data['kode_cabang'])->where('seq_no', $data['seq_no'])->delete();
     }
@@ -1086,6 +1093,11 @@ class ReturPembelianController extends Controller
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Retur Gudang' : 'Gagal Hapus Retur Gudang';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   public function getDataInputGudang(Request $request): JsonResponse
