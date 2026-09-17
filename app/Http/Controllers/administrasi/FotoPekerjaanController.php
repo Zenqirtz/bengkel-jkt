@@ -420,29 +420,21 @@ class FotoPekerjaanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    // $datas = Spk::where('id', $id)->delete();
-    $data = SpkFoto::query()
-      ->select('id', 'kode_cabang',	'kode_spk',	'no_urut', 'nama_panel', 'ukuran',	'created_at',	'created_by',	'updated_at',	'updated_by')
-      ->where('id', $id)
-      ->first()
-      ->toArray();
+    $data = SpkFoto::find($id);
 
-    $ok = SpkFoto::where('id', $id)->delete();
-    // if($ok) {
-    //   ## Hapus File 
-    //   $dest = public_path('assets/img/cabang');
-    //   $photo = $data['logo_cabang'];
-    //   $photoPath = $dest.DIRECTORY_SEPARATOR.$photo;
-    //   if (is_file($photoPath)) {
-    //     @unlink($photoPath);
-    //   }
-    // }
+    if (!$data) {
+      return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
 
-    ## Log Activity
+    $dataArr = $data->toArray();
+    $ok = $data->delete();
+
     $desc = $ok ? 'Berhasil Hapus Foto Pekerjaan' : 'Gagal Hapus Foto Pekerjaan';
-    LogActivity::saveLogActivity($desc, $data);
+    LogActivity::saveLogActivity($desc, $dataArr);
+
+    return response()->json(['status' => (bool) $ok, 'message' => $desc]);
   }
 
   // Merender BLOB menjadi gambar utuh
