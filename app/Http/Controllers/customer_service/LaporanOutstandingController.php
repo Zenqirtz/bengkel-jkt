@@ -105,7 +105,7 @@ class LaporanOutstandingController extends Controller
         $totalData = (clone $query)->count('k.id');
 
         // Hitung setelah filter (tanpa limit/offset)
-        $totalFiltered = (clone $query)->count('k.id');
+        $totalFiltered = $totalData;
 
         // Ambil data halaman saat ini
         $datas = $query
