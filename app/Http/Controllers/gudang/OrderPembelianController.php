@@ -1342,11 +1342,18 @@ class OrderPembelianController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = OrderPembelian::query()->where('id', $id)->first()?->toArray() ?? [];
+    $order = OrderPembelian::find($id);
+    if (!$order) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data order pembelian tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = OrderPembelian::where('id', $id)->delete();
+    $data = $order->toArray();
+    $ok = $order->delete();
     if ($ok) {
       OrderPembelianDetail::where('kode_cabang', $data['kode_cabang'])->where('kode_order', $data['kode_order'])->delete();
       OrderPembelianDetail2::where('kode_cabang', $data['kode_cabang'])->where('kode_order', $data['kode_order'])->delete();
@@ -1355,6 +1362,11 @@ class OrderPembelianController extends Controller
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Order Pembelian' : 'Gagal Hapus Order Pembelian';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   // public function getDataSPK(Request $request): JsonResponse
