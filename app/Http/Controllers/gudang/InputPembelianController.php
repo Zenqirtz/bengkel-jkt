@@ -1156,11 +1156,18 @@ class InputPembelianController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = InputPembelian::query()->where('id', $id)->first()?->toArray() ?? [];
+    $input = InputPembelian::find($id);
+    if (!$input) {
+      return response()->json([
+        'status'  => false,
+        'message' => 'Data input pembelian tidak ditemukan!'
+      ], 404);
+    }
 
-    $ok = InputPembelian::where('id', $id)->delete();
+    $data = $input->toArray();
+    $ok = $input->delete();
     if ($ok) {
       InputPembelianDetail::where('kode_cabang', $data['kode_cabang'])->where('kode_input', $data['kode_input'])->delete();
     }
@@ -1168,6 +1175,11 @@ class InputPembelianController extends Controller
     ## Log Activity
     $desc = $ok ? 'Berhasil Hapus Input Gudang' : 'Gagal Hapus Input Gudang';
     LogActivity::saveLogActivity($desc, $data);
+
+    return response()->json([
+      'status'  => (bool)$ok,
+      'message' => $desc
+    ]);
   }
 
   // public function getDataSPK(Request $request): JsonResponse
