@@ -547,9 +547,21 @@ class JadwalTurunLapController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    //$datas = Spk::where('id', $id)->delete();
+    $data = Spk::find($id);
+
+    if (!$data) {
+      return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
+
+    $dataArr = $data->toArray();
+    $ok = $data->delete();
+
+    $desc = $ok ? 'Berhasil Hapus Jadwal Turun Lapangan' : 'Gagal Hapus Jadwal Turun Lapangan';
+    LogActivity::saveLogActivity($desc, $dataArr);
+
+    return response()->json(['status' => (bool) $ok, 'message' => $desc]);
   }
 
 }
