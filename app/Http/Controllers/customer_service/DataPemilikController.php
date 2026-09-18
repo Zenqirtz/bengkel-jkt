@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Http\JsonResponse;
 use App\Models\DataPemilik;
 use App\Models\Parameter;
+use App\Models\LogActivity;
 use Carbon\Carbon;
 
 class DataPemilikController extends Controller
@@ -431,40 +433,38 @@ class DataPemilikController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    try {
-      $pemilik = DataPemilik::findOrFail($id);
+    $data = DataPemilik::find($id);
 
-      // Delete file identitas
-      if ($pemilik->file_identitas) {
-        $filePath = public_path('assets/img/identitas/' . $pemilik->file_identitas);
-        if (file_exists($filePath) && is_file($filePath)) {
-          @unlink($filePath);
-        }
-      }
-
-      // Delete file npwp
-      if ($pemilik->file_npwp) {
-        $filePath = public_path('assets/img/npwp/' . $pemilik->file_npwp);
-        if (file_exists($filePath) && is_file($filePath)) {
-          @unlink($filePath);
-        }
-      }
-
-      $pemilik->delete();
-
-      return response()->json([
-        'success' => true,
-        'message' => 'Data pemilik berhasil dihapus'
-      ]);
-
-    } catch (\Exception $e) {
-      return response()->json([
-        'success' => false,
-        'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-      ], 500);
+    if (!$data) {
+      return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
     }
+
+    $dataArr = $data->toArray();
+
+    // Hapus file identitas
+    if ($data->file_identitas) {
+      $filePath = public_path('assets/img/identitas/' . $data->file_identitas);
+      if (file_exists($filePath) && is_file($filePath)) {
+        @unlink($filePath);
+      }
+    }
+
+    // Hapus file npwp
+    if ($data->file_npwp) {
+      $filePath = public_path('assets/img/npwp/' . $data->file_npwp);
+      if (file_exists($filePath) && is_file($filePath)) {
+        @unlink($filePath);
+      }
+    }
+
+    $ok = $data->delete();
+
+    $desc = $ok ? 'Berhasil Hapus Data Pemilik' : 'Gagal Hapus Data Pemilik';
+    LogActivity::saveLogActivity($desc, $dataArr);
+
+    return response()->json(['status' => (bool) $ok, 'message' => $desc]);
   }
 
   /**
