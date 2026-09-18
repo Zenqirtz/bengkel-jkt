@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Asuransi;
 use App\Models\Parameter;
+use App\Models\LogActivity;
 // use Carbon\Carbon;
 
 use App\Helpers\Helpers as Helper;
@@ -240,9 +241,21 @@ class AsuransiController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $datas = Asuransi::where('id', $id)->delete();
+    $data = Asuransi::find($id);
+
+    if (!$data) {
+      return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
+
+    $dataArr = $data->toArray();
+    $ok = $data->delete();
+
+    $desc = $ok ? 'Berhasil Hapus Asuransi' : 'Gagal Hapus Asuransi';
+    LogActivity::saveLogActivity($desc, $dataArr);
+
+    return response()->json(['status' => (bool) $ok, 'message' => $desc]);
   }
 
   public function getNamaAsuransi(Request $request): JsonResponse
