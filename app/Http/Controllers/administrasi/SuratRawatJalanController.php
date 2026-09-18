@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use App\Models\Parameter;
+use App\Models\Spk;
 use App\Models\LogActivity;
 use Carbon\Carbon;
 
@@ -315,9 +316,21 @@ class SuratRawatJalanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    //
+    $data = Spk::find($id);
+
+    if (!$data) {
+      return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
+
+    $dataArr = $data->toArray();
+    $ok = $data->delete();
+
+    $desc = $ok ? 'Berhasil Hapus Surat Rawat Jalan' : 'Gagal Hapus Surat Rawat Jalan';
+    LogActivity::saveLogActivity($desc, $dataArr);
+
+    return response()->json(['status' => (bool) $ok, 'message' => $desc]);
   }
 
   //Cetak Surat Rawat Jalan (bisa multi-id via query string).
