@@ -215,8 +215,20 @@ class UserPrivilegeController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    //
+    $data = UserPrivilege::find($id);
+
+    if (!$data) {
+      return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
+
+    $dataArr = $data->toArray();
+    $ok = $data->delete();
+
+    $desc = $ok ? 'Berhasil Hapus User Privilege' : 'Gagal Hapus User Privilege';
+    LogActivity::saveLogActivity($desc, $dataArr);
+
+    return response()->json(['status' => (bool) $ok, 'message' => $desc]);
   }
 }
