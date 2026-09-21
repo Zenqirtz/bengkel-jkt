@@ -589,15 +589,21 @@ class KendaraanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    $data = Kendaraan::query()->where('id', $id)->first()?->toArray() ?? [];
+    $data = Kendaraan::find($id);
 
-    $ok = Kendaraan::where('id', $id)->delete();
+    if (!$data) {
+      return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
 
-    ## Log Activity
+    $dataArr = $data->toArray();
+    $ok = $data->delete();
+
     $desc = $ok ? 'Berhasil Hapus Data Kendaraan.' : 'Gagal Hapus Data Kendaraan.';
-    LogActivity::saveLogActivity($desc, $data);
+    LogActivity::saveLogActivity($desc, $dataArr);
+
+    return response()->json(['status' => (bool) $ok, 'message' => $desc]);
   }
 
   /**
