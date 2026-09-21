@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanUnitRawatJalanExport;
 use App\Models\Parameter;
+use App\Models\Spk;
 use App\Models\LogActivity;
 
 use App\Helpers\Helpers as Helper;
@@ -205,9 +206,21 @@ class LaporanUnitRawatJalanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    //
+    $data = Spk::find($id);
+
+    if (!$data) {
+      return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
+
+    $dataArr = $data->toArray();
+    $ok = $data->delete();
+
+    $desc = $ok ? 'Berhasil Hapus Laporan Unit Rawat Jalan' : 'Gagal Hapus Laporan Unit Rawat Jalan';
+    LogActivity::saveLogActivity($desc, $dataArr);
+
+    return response()->json(['status' => (bool) $ok, 'message' => $desc]);
   }
 
   public function printData(Request $request)
