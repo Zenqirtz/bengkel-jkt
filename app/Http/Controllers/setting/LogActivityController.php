@@ -168,5 +168,5 @@ class LogActivityController extends Controller
   public function show($id) {}
   public function edit($id) {}
   public function update(Request $request, $id) {}
-  public function destroy($id) {}
+  public function destroy($id): JsonResponse { return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501); }
 }
