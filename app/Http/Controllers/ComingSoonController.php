@@ -91,8 +91,8 @@ class ComingSoonController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy($id): JsonResponse
   {
-    // $datas = Bahan::where('id', $id)->delete();
+    return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501);
   }
 }
