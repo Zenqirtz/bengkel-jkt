@@ -412,7 +412,7 @@ class FotoPekerjaanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id) {}
+  public function update(Request $request, $id): JsonResponse { return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501); }
 
   /**
    * Remove the specified resource from storage.
