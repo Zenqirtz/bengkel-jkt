@@ -639,4 +639,13 @@ class LaporanInvoiceTerbitController extends Controller
       return redirect()->back()->with('error', 'Gagal print: ' . $e->getMessage());
     }
   }
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  int  $id
+   * @return \Illuminate\Http\JsonResponse
+   */
+  public function update(Request $request, $id): JsonResponse { return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501); }
+
 }
