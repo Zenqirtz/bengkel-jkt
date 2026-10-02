@@ -419,53 +419,9 @@ class PemasokController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update(Request $request, $id): JsonResponse
   {
-    // $result = Pemasok::findOrFail($id);
-
-    // $rules = [
-    //   'nama_pemasok' => 'required|string|max:50',
-    //   'alamat1' => 'required',
-    //   'telepon' => 'required|string|max:20',
-    // ];
-
-    // $messages = [
-    //   'nama_pemasok.required' => 'Nama Supplier Wajib diisi',
-    //   'alamat1.required'  => 'Alamat Wajib diisi',
-    //   'telepon.required'  => 'Telepon Wajib diisi',
-    // ];
-
-    // $validator = Validator::make($request->all(), $rules, $messages);
-
-    // if ($validator->fails()) {
-    //   return response()->json([
-    //     'status' => false,
-    //     'message' => "Gagal menyimpan data.",
-    //     'errors' => $validator->errors()
-    //   ]);
-    // }
-
-    // $data = [
-    //   'kode_cabang'    => $request->kode_cabang,
-    //   'nama_pemasok'   => $request->nama_pemasok,
-    //   'npwp'           => $request->npwp,
-    //   'alamat1'        => $request->alamat1,
-    //   'kota'           => $request->kota,
-    //   'kode_pos'       => $request->kode_pos,
-    //   'po_box'         => $request->po_box,
-    //   'telepon'        => $request->telepon,
-    //   'fax'            => $request->fax,
-    //   'email'          => $request->email,
-    //   'kontak_person'  => $request->kontak_person,
-    //   'updated_by'     => Auth::user()->username,
-    // ];
-
-    // $ok = $result->update($data);
-
-    // return response()->json([
-    //   'status'  => (bool)$ok,
-    //   'message' => $ok ? 'Data berhasil diubah.' : 'Gagal mengubah data.'
-    // ]);
+    return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501);
   }
 
   /**
