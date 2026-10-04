@@ -189,7 +189,7 @@ class GroupPrivilegeController extends Controller
    */
   public function edit($id): JsonResponse
   {
-    //
+    return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501);
   }
 
   /**
