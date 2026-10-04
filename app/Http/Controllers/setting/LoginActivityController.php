@@ -180,9 +180,9 @@ class LoginActivityController extends Controller
   }
 
   // Stub methods required by Route::resource
-  public function create() {}
-  public function show($id) {}
-  public function edit($id) {}
+  public function create(): JsonResponse { return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501); }
+  public function show($id): JsonResponse { return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501); }
+  public function edit($id): JsonResponse { return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501); }
   public function update(Request $request, $id): JsonResponse { return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501); }
   public function destroy($id): JsonResponse { return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501); }
 }
