@@ -183,9 +183,9 @@ class LaporanUnitRawatJalanController extends Controller
    * @return \Illuminate\Http\Response
    */
 
-  public function edit($id)
+  public function edit($id): JsonResponse
   {
-    //
+    return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501);
   }
 
   /**
