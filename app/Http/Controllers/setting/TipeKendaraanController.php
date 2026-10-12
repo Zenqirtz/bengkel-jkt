@@ -290,9 +290,9 @@ class TipeKendaraanController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function show($id)
+  public function show($id): JsonResponse
   {
-    //
+    return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501);
   }
 
   /**
