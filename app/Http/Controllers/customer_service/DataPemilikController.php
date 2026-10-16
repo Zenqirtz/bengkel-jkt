@@ -269,7 +269,7 @@ class DataPemilikController extends Controller
   /**
    * Display the specified resource.
    */
-  public function show($id)
+  public function show($id): JsonResponse
   {
     try {
       $pemilik = DataPemilik::findOrFail($id);
