@@ -93,9 +93,9 @@ class UserPrivilegeController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function create()
+  public function create(): JsonResponse
   {
-    //
+    return response()->json(['status' => false, 'message' => 'Fitur belum tersedia'], 501);
   }
 
   /**
